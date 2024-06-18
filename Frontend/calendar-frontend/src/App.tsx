@@ -3,11 +3,17 @@ import logo from './logo.svg';
 import './App.css';
 import { clear } from 'console';
 
+interface IFullCalendar {
+  day: number
+  isToday: boolean
+}
+
 function App() {
+  const [today, setToday] = useState<Date>(new Date())
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
   const [firstDayOfMonth, setFirstDayOfMonth] = useState<Date>(new Date())
   const [lastDayOfMonth, setLastDayOfMonth] = useState<Date>(new Date())
-  const [fullCalendar, setFullCalendar] = useState<number[]>([])
+  const [fullCalendar, setFullCalendar] = useState<IFullCalendar[]>([])
   const [firstTime, setFirstTime] = useState<boolean>(true)
 
 
@@ -29,8 +35,6 @@ function App() {
   const Days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
   useEffect(() => {
-
-    
     const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
     const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
     setFirstDayOfMonth(firstDay)
@@ -39,13 +43,17 @@ function App() {
     let shift = getDayOfWeek(firstDay)
 
     for (let i = 0; i < shift; i++) {
-      setFullCalendar(prev => [...prev, 0])
+      setFullCalendar(prev => [...prev, { day: 0, isToday: false }])
     }
 
     //increment the firstDay by 1 until the last day of the month
     while (firstDay <= lastDay) {
       const day = firstDay.getDate()
-      setFullCalendar(prev => [...prev, day])
+
+      //check if the day is today
+      const isToday = firstDay.toDateString() === today.toDateString()
+
+      setFullCalendar(prev => [...prev, { day, isToday }])
       firstDay.setDate(firstDay.getDate() + 1)
     }
 
@@ -56,23 +64,40 @@ function App() {
 
   }, [currentDate])
 
-  useEffect(() => {
-    console.log(fullCalendar)
-  }, [fullCalendar])
+  const handleNextMonth = () => {
+    const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+    setCurrentDate(nextMonth)
+  }
+
+  const handlePrevMonth = () => {
+    const prevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+    setCurrentDate(prevMonth)
+  }
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const year = parseInt(e.target.value)
+
+    //check if the year is valid
+    if(year < 0 || isNaN(year) || year > 270000) return
+
+    const newDate = new Date(year, currentDate.getMonth(), 1)
+    setCurrentDate(newDate)
+  }
 
   return (
     <>
       <div className='flex flex-col p-5'>
-        <header className='flex flex-row justify-between items-center'>
-          <div className='flex flex-row gap-2'>
-            <h1 className='text-xl font-bold'>{getNameOfMonth(currentDate)}</h1>
-            <h1 className='text-xl font-bold'>{currentDate.getFullYear()}</h1>
-          </div>
-          <div className="join flex flex-row gap-2">
-            <button className="join-item btn btn-ghost text-xl font-bold">«</button>
-            <button className="join-item btn btn-ghost text-xl font-bold">»</button>
+
+        {/* header  */}
+        <header className='flex flex-row justify-center items-center'>
+          <div className='flex flex-row justify-center items-center gap-2'>
+            <button onClick={() => handlePrevMonth()} className="join-item btn btn-ghost text-xl font-bold">«</button>
+            <h1 className='text-2xl font-bold'>{getNameOfMonth(currentDate)}</h1>
+            <input type='number' onChange={(e) => handleYearChange(e)} defaultValue={currentDate.getFullYear()} className='input text-2xl font-bold w-24' />
+            <button onClick={() => handleNextMonth()} className="join-item btn btn-ghost text-xl font-bold">»</button>
           </div>
         </header>
+
         <main>
           {/* Title of Day */}
           <header className='flex flex-row justify-center items-center'>
@@ -85,9 +110,13 @@ function App() {
 
           {/* Calendar */}
           <div className='grid grid-cols-7 gap-1'>
-            {fullCalendar.map((day, index) => (
+            {fullCalendar.map((dateDetail, index) => (
               <div key={index} className='flex flex-col items-center justify-center'>
-                {day != 0 && <button className='text-sm w-full btn btn-ghost'>{day}</button>}
+                {/* if the day is not 0, then render the day */}
+                {dateDetail.day != 0 && 
+                  // if the day is today, then render the day with a different style
+                  <button className={`text-sm w-full h-20 btn btn-ghost ${dateDetail.isToday && 'text-warning font-extrabold'}`}>{dateDetail.day}</button>
+                }
               </div>
             ))}
           </div>
