@@ -103,7 +103,10 @@ export default function MiniCalendar() {
                                 {/* if the day is not 0, then render the day */}
                                 {dateDetail.day != 0 &&
                                     // if the day is today, then render the day with a different style
-                                    <button className={`text-sm w-full h-20 btn btn-ghost ${dateDetail.isToday && 'text-warning font-extrabold'}`}>{dateDetail.day}</button>
+                                    <button className={`text-sm w-full h-20 btn btn-ghost ${dateDetail.isToday && 'text-warning font-extrabold'}`}>
+                                        {/* if today render with diff style */}
+                                        {dateDetail.isToday ? <div className="badge badge-success gap-2"> {dateDetail.day} </div> : dateDetail.day}
+                                    </button>
                                 }
                             </div>
                         ))}
