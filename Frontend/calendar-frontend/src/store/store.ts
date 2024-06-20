@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import testSlice from "./testSlice";
+import calendarSlice from "./calendarSlice";
 export default configureStore({
     reducer: {
-        test: testSlice,
+        calendar: calendarSlice,
     },
 });

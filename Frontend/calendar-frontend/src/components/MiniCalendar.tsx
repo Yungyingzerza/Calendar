@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IMiniCalendar } from 'interfaces/IMiniCalendar';
+import { ICalendarSlice } from 'interfaces/ICalendarSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSelectedDay, setSelectedMonth, setSelectedYear } from 'store/calendarSlice';
 
 export default function MiniCalendar() {
     const [today, setToday] = useState<Date>(new Date())
@@ -7,6 +10,23 @@ export default function MiniCalendar() {
     const [firstDayOfMonth, setFirstDayOfMonth] = useState<Date>(new Date())
     const [lastDayOfMonth, setLastDayOfMonth] = useState<Date>(new Date())
     const [fullCalendar, setFullCalendar] = useState<IMiniCalendar[]>([])
+
+    const {selectedDay, selectedMonth, selectedYear} = useSelector((state: ICalendarSlice) => state.calendar)
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(setSelectedDay(today.getDate()))
+        dispatch(setSelectedMonth(today.getMonth()))
+        dispatch(setSelectedYear(today.getFullYear()))
+
+        //clean up
+        return () => {
+            dispatch(setSelectedDay(0))
+            dispatch(setSelectedMonth(0))
+            dispatch(setSelectedYear(0))
+        }
+    }, [])
 
     const getDayOfWeek = (date: Date) => {
         return date.getDay()
@@ -24,7 +44,14 @@ export default function MiniCalendar() {
 
     const Days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
+    const handleDayClick = (day: number) => {
+        dispatch(setSelectedDay(day))
+        dispatch(setSelectedMonth(currentDate.getMonth()))
+        dispatch(setSelectedYear(currentDate.getFullYear()))
+    }
+
     useEffect(() => {
+
         const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
         const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
         setFirstDayOfMonth(firstDay)
@@ -33,17 +60,19 @@ export default function MiniCalendar() {
         let shift = getDayOfWeek(firstDay)
 
         for (let i = 0; i < shift; i++) {
-            setFullCalendar(prev => [...prev, { day: 0, isToday: false }])
+            setFullCalendar(prev => [...prev, { day: 0, month: 0, year:0, isToday: false }])
         }
 
         //increment the firstDay by 1 until the last day of the month
         while (firstDay <= lastDay) {
             const day = firstDay.getDate()
+            const month = firstDay.getMonth()
+            const year = firstDay.getFullYear()
 
             //check if the day is today
             const isToday = firstDay.toDateString() === today.toDateString()
 
-            setFullCalendar(prev => [...prev, { day, isToday }])
+            setFullCalendar(prev => [...prev, { day, month, year, isToday }])
             firstDay.setDate(firstDay.getDate() + 1)
         }
 
@@ -103,9 +132,16 @@ export default function MiniCalendar() {
                                 {/* if the day is not 0, then render the day */}
                                 {dateDetail.day != 0 &&
                                     // if the day is today, then render the day with a different style
-                                    <button className={`text-sm w-full h-20 btn btn-ghost ${dateDetail.isToday && 'text-warning font-extrabold'}`}>
+                                    <button onClick={() => handleDayClick(dateDetail.day)} className={`text-sm w-full h-20 btn btn-ghost ${dateDetail.isToday && 'text-warning font-extrabold'}`}>
                                         {/* if today render with diff style */}
-                                        {dateDetail.isToday ? <div className="badge badge-success gap-2"> {dateDetail.day} </div> : dateDetail.day}
+                                        {dateDetail.isToday ? <div className="badge badge-success gap-2"> {dateDetail.day} Today</div> 
+                                        : 
+                                        // check if the day is the selected day
+                                        dateDetail.day === selectedDay && dateDetail.month === selectedMonth && dateDetail.year === selectedYear ?
+                                            <div className="badge badge-error gap-2"> {dateDetail.day} </div> 
+                                            :
+                                        dateDetail.day
+                                        }
                                     </button>
                                 }
                             </div>
