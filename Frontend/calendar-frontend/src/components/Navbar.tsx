@@ -1,9 +1,21 @@
 import { useEffect,useState } from "react";
 import { themeChange } from 'theme-change'
+import { useDispatch, useSelector } from "react-redux";
+import { IThemeSlice } from "interfaces/IThemeSlice";
+import { setTheme } from "store/themeSlice";
+import { setCurrentDisplayMonth, setCurrentDisplayYear } from "store/calendarSlice";
 export default function Navbar() {
 
-    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark')
+    const theme = useSelector((state : IThemeSlice) => state.theme.value);
+    const dispatch = useDispatch();
+
     const [startTheme, setStartTheme] = useState(localStorage.getItem('theme') || 'dark')
+
+    const handleTodayClick = () => {
+        const today = new Date()
+        dispatch(setCurrentDisplayMonth(today.getMonth()))
+        dispatch(setCurrentDisplayYear(today.getFullYear()))
+    }
 
     useEffect(() => {
         themeChange(false)
@@ -13,16 +25,16 @@ export default function Navbar() {
         
         if (theme === 'light') {
             localStorage.setItem('theme', 'dark')
-            setTheme('dark')
+            dispatch(setTheme('dark'))
         } else {
             localStorage.setItem('theme', 'light')
-            setTheme('light')
+            dispatch(setTheme('light'))
         }
     }
 
     return (
         <>
-            <div className="w-full h-16 bg-base-200 bg-opacity-10 backdrop-blur-2xl flex flex-row-reverse items-center gap-4">
+            <div className="w-full h-16 bg-base-200 bg-opacity-10 backdrop-blur-2xl flex flex-row-reverse items-center gap-4 shadow-lg ">
                 <div className="avatar mr-5 cursor-pointer">
                     <div className="mask mask-hexagon w-10">
                         <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
@@ -53,6 +65,11 @@ export default function Navbar() {
                             d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
                     </svg>
                 </label>
+
+                {/* left zone */}
+                <div className="flex-1 ml-5">
+                    <button onClick={() => handleTodayClick()} className="btn btn-ghost border border-gray-600">Today</button>
+                </div>
             </div>
         </>
     )

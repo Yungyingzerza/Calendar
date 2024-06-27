@@ -1,15 +1,21 @@
 import Sidebar from "components/Sidebar";
 import Navbar from "components/Navbar";
+import { useSelector } from "react-redux";
+import { IThemeSlice } from "interfaces/IThemeSlice";
 
 function App() {
+  const theme = useSelector((state : IThemeSlice) => state.theme.value);
+  
   return (
     <>
+    <div className="relative h-full w-full bg-base-100">
+    <div className={`absolute inset-0 bg-pink-400 bg-[size:20px_20px] ${theme == 'dark' ? 'opacity-15' : 'opacity-50'} blur-[350px] z-10`}> </div>
       <div className="flex flex-col md:flex-row flex-wrap relative z-20">
         {/* Mobile */}
         <div className="w-full md:hidden block">
           <Navbar />
         </div>
-        <div className="w-full md:w-72 md:h-screen p-2">
+        <div className="w-full md:w-72 md:h-screen">
           <Sidebar />
         </div>
         <div className="flex-1 flex flex-col h-screen justify-center items-center">
@@ -21,6 +27,7 @@ function App() {
 
           </div>
         </div>
+      </div>
       </div>
     </>
   );

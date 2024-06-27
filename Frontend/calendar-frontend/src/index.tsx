@@ -7,18 +7,17 @@ import reportWebVitals from './reportWebVitals';
 import store from 'store/store';
 import { Provider } from 'react-redux';
 
+
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <div className="relative h-full w-full bg-base-100">
-        <div className="absolute inset-0 bg-pink-400 bg-[size:20px_20px] opacity-15 blur-[350px] z-10">
-          
-        </div>
-        <App />
-      </div>
+    <Provider store={store}>    
+      <App />
     </Provider>
   </React.StrictMode>
 );

@@ -1,9 +1,11 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     selectedDay: 0,
     selectedMonth: 0,
     selectedYear: 0,
+    currentDisplayMonth: 0,
+    currentDisplayYear: 0,
 };
 
 export const calendarSlice = createSlice({
@@ -19,8 +21,14 @@ export const calendarSlice = createSlice({
         setSelectedYear: (state, action) => {
             state.selectedYear = action.payload;
         },
+        setCurrentDisplayMonth: (state, action) => {
+            state.currentDisplayMonth = action.payload;
+        },
+        setCurrentDisplayYear: (state, action) => {
+            state.currentDisplayYear = action.payload;
+        }
     },
 });
 
-export const { setSelectedDay, setSelectedMonth, setSelectedYear } = calendarSlice.actions;
+export const { setSelectedDay, setSelectedMonth, setSelectedYear, setCurrentDisplayMonth, setCurrentDisplayYear } = calendarSlice.actions;
 export default calendarSlice.reducer;

@@ -2,29 +2,38 @@ import React, { useEffect, useState } from 'react';
 import { IMiniCalendar } from 'interfaces/IMiniCalendar';
 import { ICalendarSlice } from 'interfaces/ICalendarSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import { setSelectedDay, setSelectedMonth, setSelectedYear } from 'store/calendarSlice';
+import { setSelectedDay, setSelectedMonth, setSelectedYear, setCurrentDisplayMonth, setCurrentDisplayYear } from 'store/calendarSlice';
 
 export default function MiniCalendar() {
+    const dispatch = useDispatch();
+
+    const { selectedDay, selectedMonth, selectedYear, currentDisplayMonth, currentDisplayYear } = useSelector((state: ICalendarSlice) => state.calendar)
     const [today, setToday] = useState<Date>(new Date())
     const [currentDate, setCurrentDate] = useState<Date>(new Date())
     const [firstDayOfMonth, setFirstDayOfMonth] = useState<Date>(new Date())
     const [lastDayOfMonth, setLastDayOfMonth] = useState<Date>(new Date())
     const [fullCalendar, setFullCalendar] = useState<IMiniCalendar[]>([])
 
-    const { selectedDay, selectedMonth, selectedYear } = useSelector((state: ICalendarSlice) => state.calendar)
+    useEffect(() => {
+        const manualDate = new Date(currentDisplayYear, currentDisplayMonth, 1)
 
-    const dispatch = useDispatch();
+        setCurrentDate(manualDate)
+    }, [currentDisplayMonth, currentDisplayYear])
 
     useEffect(() => {
         dispatch(setSelectedDay(today.getDate()))
         dispatch(setSelectedMonth(today.getMonth()))
         dispatch(setSelectedYear(today.getFullYear()))
+        dispatch(setCurrentDisplayMonth(today.getMonth()))
+        dispatch(setCurrentDisplayYear(today.getFullYear()))
 
         //clean up
         return () => {
             dispatch(setSelectedDay(0))
             dispatch(setSelectedMonth(0))
             dispatch(setSelectedYear(0))
+            dispatch(setCurrentDisplayMonth(0))
+            dispatch(setCurrentDisplayYear(0))
         }
     }, [])
 
@@ -32,9 +41,9 @@ export default function MiniCalendar() {
         return date.getDay()
     }
 
-    const getNameOfMonth = (date: Date) => {
+    const getNameOfMonth = (month: number) => {
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-        return monthNames[date.getMonth()]
+        return monthNames[month]
     }
 
     const getNameOfDay = (date: Date) => {
@@ -86,11 +95,15 @@ export default function MiniCalendar() {
     const handleNextMonth = () => {
         const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
         setCurrentDate(nextMonth)
+        dispatch(setCurrentDisplayMonth(nextMonth.getMonth()))
+        dispatch(setCurrentDisplayYear(nextMonth.getFullYear()))
     }
 
     const handlePrevMonth = () => {
         const prevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
         setCurrentDate(prevMonth)
+        dispatch(setCurrentDisplayMonth(prevMonth.getMonth()))
+        dispatch(setCurrentDisplayYear(prevMonth.getFullYear()))
     }
 
     const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,6 +114,8 @@ export default function MiniCalendar() {
 
         const newDate = new Date(year, currentDate.getMonth(), 1)
         setCurrentDate(newDate)
+        dispatch(setCurrentDisplayMonth(newDate.getMonth()))
+        dispatch(setCurrentDisplayYear(newDate.getFullYear()))
     }
     return (
         <>
@@ -108,8 +123,8 @@ export default function MiniCalendar() {
             <header className='flex flex-row justify-center items-center'>
                 <div className='flex flex-row justify-center items-center gap-2'>
                     <button onClick={() => handlePrevMonth()} className="join-item btn btn-ghost text-xl font-bold">«</button>
-                    <h1 className='text-2xl font-bold'>{getNameOfMonth(currentDate)}</h1>
-                    <input type='number' onChange={(e) => handleYearChange(e)} defaultValue={currentDate.getFullYear()} className='input text-2xl font-bold w-24 bg-transparent' />
+                    <h1 className='text-2xl font-bold'>{getNameOfMonth(currentDisplayMonth)}</h1>
+                    <input type='number' onChange={(e) => handleYearChange(e)} value={currentDisplayYear} className='input text-2xl font-bold w-24 bg-transparent' />
                     <button onClick={() => handleNextMonth()} className="join-item btn btn-ghost text-xl font-bold">»</button>
                 </div>
             </header>
