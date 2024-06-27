@@ -3,7 +3,10 @@ import MiniCalendar from "components/MiniCalendar";
 function App() {
   return (
     <>
-      <MiniCalendar />
+      <div className="w-80">
+        <MiniCalendar />
+      </div>
+      
     </>
   );
 }

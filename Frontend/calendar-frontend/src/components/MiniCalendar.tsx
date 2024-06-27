@@ -104,13 +104,13 @@ export default function MiniCalendar() {
     }
     return (
         <>
-            <div className='flex flex-col p-5'>
+            <div className='flex flex-col p-5 bg-base-200 bg-opacity-10 backdrop-blur-2xl rounded-lg  shadow-lg h-screen'>
                 {/* header  */}
                 <header className='flex flex-row justify-center items-center'>
                     <div className='flex flex-row justify-center items-center gap-2'>
                         <button onClick={() => handlePrevMonth()} className="join-item btn btn-ghost text-xl font-bold">«</button>
                         <h1 className='text-2xl font-bold'>{getNameOfMonth(currentDate)}</h1>
-                        <input type='number' onChange={(e) => handleYearChange(e)} defaultValue={currentDate.getFullYear()} className='input text-2xl font-bold w-24' />
+                        <input type='number' onChange={(e) => handleYearChange(e)} defaultValue={currentDate.getFullYear()} className='input text-2xl font-bold w-24 bg-transparent' />
                         <button onClick={() => handleNextMonth()} className="join-item btn btn-ghost text-xl font-bold">»</button>
                     </div>
                 </header>
@@ -132,9 +132,9 @@ export default function MiniCalendar() {
                                 {/* if the day is not 0, then render the day */}
                                 {dateDetail.day != 0 &&
                                     // if the day is today, then render the day with a different style
-                                    <button onClick={() => handleDayClick(dateDetail.day)} className={`text-sm w-full h-20 btn btn-ghost ${dateDetail.isToday && 'text-warning font-extrabold'}`}>
+                                    <button onClick={() => handleDayClick(dateDetail.day)} className={`text-sm w-full btn btn-ghost ${dateDetail.isToday && 'text-warning font-extrabold'}`}>
                                         {/* if today render with diff style */}
-                                        {dateDetail.isToday ? <div className="badge badge-success gap-2"> {dateDetail.day} Today</div> 
+                                        {dateDetail.isToday ? <div className=" gap-2"> {dateDetail.day} Today</div> 
                                         : 
                                         // check if the day is the selected day
                                         dateDetail.day === selectedDay && dateDetail.month === selectedMonth && dateDetail.year === selectedYear ?

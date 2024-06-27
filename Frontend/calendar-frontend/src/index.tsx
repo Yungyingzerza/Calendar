@@ -13,7 +13,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <div className="relative h-full w-full bg-base-100">
+        <div className="absolute inset-0 bg-red-400 bg-[size:20px_20px] opacity-15 blur-[100px]"></div>
+        <App />
+      </div>
+
     </Provider>
   </React.StrictMode>
 );
