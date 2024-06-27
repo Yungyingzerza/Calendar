@@ -1,9 +1,10 @@
 import Sidebar from "components/Sidebar";
 import Navbar from "components/Navbar";
+
 function App() {
   return (
     <>
-      <div className="flex flex-col md:flex-row flex-wrap">
+      <div className="flex flex-col md:flex-row flex-wrap relative z-20">
         {/* Mobile */}
         <div className="w-full md:hidden block">
           <Navbar />
