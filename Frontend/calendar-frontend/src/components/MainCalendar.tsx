@@ -8,20 +8,20 @@ export default function MainCalendar() {
             startHour: 10,
             endHour: 12,
             startMinute: 30,
-            endMinute: 10
+            endMinute: 0
         },
         {
             id: 2,
             title: 'Meeting with team',
-            startHour: 13,
+            startHour: 10,
             endHour: 15,
-            startMinute: 0,
+            startMinute: 20,
             endMinute: 0
         },
         {
             id: 3,
             title: 'Meeting with team',
-            startHour: 16,
+            startHour: 14,
             endHour: 18,
             startMinute: 0,
             endMinute: 0

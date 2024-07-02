@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux"
 import { ICalendarSlice } from "interfaces/ICalendarSlice"
 import { INoteData } from "interfaces/INoteData";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 export default function NoteMainCalendar({ hour, data }: { hour: number, data: INoteData[]}) {
     const { selectedDay, selectedMonth, selectedYear } = useSelector((state: ICalendarSlice) => state.calendar);
     let height = 0;

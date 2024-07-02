@@ -45,11 +45,11 @@ export default function Navbar() {
 
                 <label className="swap swap-rotate">
                     {/* this hidden checkbox controls the state */}
-                    <input type="checkbox" onClick={() => toggleTheme()} data-set-theme={theme == 'light' ? 'dark' : 'light'} data-act-class="ACTIVECLASS"/>
+                    <input type="checkbox" onClick={() => toggleTheme()} data-set-theme={theme === 'light' ? 'dark' : 'light'} data-act-class="ACTIVECLASS"/>
 
                     {/* sun icon */}
                     <svg
-                        className={`${startTheme == 'light' ? 'swap-off' : 'swap-on' } h-10 w-10 fill-current`}
+                        className={`${startTheme === 'light' ? 'swap-off' : 'swap-on' } h-10 w-10 fill-current`}
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24">
                         <path
