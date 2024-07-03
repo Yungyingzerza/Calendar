@@ -1,20 +1,16 @@
 import { useSelector } from "react-redux"
 import { ICalendarSlice } from "interfaces/ICalendarSlice"
 import { INoteData } from "interfaces/INoteData";
-import { useRef, useEffect } from "react";
-export default function NoteMainCalendar({ hour, data }: { hour: number, data: INoteData[]}) {
+import NoteDetail from "./NoteDetail";
+export default function NoteListMainCalendar({ hour, data }: { hour: number, data: INoteData[]}) {
     const { selectedDay, selectedMonth, selectedYear } = useSelector((state: ICalendarSlice) => state.calendar);
-    let height = 0;
-    let top = 0;
-    const item = useRef<HTMLDivElement>(null);
 
-
-    useEffect(() => {
-        if (item.current) {
-            item.current.style.top = `${top}px`;
-            item.current.style.height = `${height}px`;
-        }
-    }, [item])
+    // useEffect(() => {
+    //     if (item.current) {
+    //         item.current.style.top = `${top}px`;
+    //         item.current.style.height = `${height}px`;
+    //     }
+    // }, [item])
 
     // 240 px = 60 min
     // 1px = 0.25 min
@@ -33,13 +29,10 @@ export default function NoteMainCalendar({ hour, data }: { hour: number, data: I
                     {/* note list */}
                     {data.map((note, index) => {
                         if (note.startHour === hour) {
-                            height = (note.endHour - note.startHour) * 240 + (note.endHour - note.startHour) * 40 - (note.startMinute * 4) + (note.endMinute * 4);
-                            top = note.startMinute * 4;
+                            let newHeight = (note.endHour - note.startHour) * 240 + (note.endHour - note.startHour) * 40 - (note.startMinute * 4) + (note.endMinute * 4);
+                            let newTop = note.startMinute * 4;
                             return (
-                                <div ref={item} key={index} className={`bg-info text-info-content w-full rounded-md relative flex flex-col flex-wrap gap-1 overflow-hidden`}>
-                                    <span className="text-lg"> {note.title} </span>
-                                    <span className="text-lg"> {note.startHour.toString().padStart(2, '0')}:{note.startMinute.toString().padStart(2, '0')} - {note.endHour.toString().padStart(2, '0')}:{note.endMinute.toString().padStart(2, '0')} </span>
-                                </div>
+                                <NoteDetail key={index} note={note} newHeight={newHeight} newTop={newTop} />
                             )
 
                         }
