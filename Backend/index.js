@@ -7,6 +7,8 @@ const {connect, sync} = require('./config/database');
 dotenv.config();
 const app = express();
 
+const authenRouter = require('./controller/authen.routes');
+
 app.use(cookieParser());
 app.use(cors({
     origin: process.env.CLIENT_URL,
@@ -24,6 +26,8 @@ initializeDatabase();
 app.get('/', (req, res) => {
     res.json('Hello World!');
 });
+
+app.use('/authen', authenRouter);
 
 
 app.listen(process.env.PORT, () => {

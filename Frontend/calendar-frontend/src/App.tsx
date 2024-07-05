@@ -3,6 +3,7 @@ import Navbar from "components/Navbar";
 import MainCalendar from "components/MainCalendar";
 import { useSelector } from "react-redux";
 import { IThemeSlice } from "interfaces/IThemeSlice";
+import LoginModal from "components/LoginModal";
 
 function App() {
   const theme = useSelector((state : IThemeSlice) => state.theme.value);
@@ -11,6 +12,7 @@ function App() {
     <>
     <div className="relative h-full w-full bg-base-100">
     <div className={`absolute inset-0 bg-pink-400 bg-[size:20px_20px] ${theme === 'dark' ? 'opacity-15' : 'opacity-50'} blur-[350px] z-10`}> </div>
+      <LoginModal />
       <div className="flex flex-col md:flex-row flex-wrap relative z-20">
         {/* Mobile */}
         <div className="w-full md:hidden block">

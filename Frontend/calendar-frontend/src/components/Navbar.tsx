@@ -7,10 +7,9 @@ import { setTheme } from "store/themeSlice";
 import { setCurrentDisplayMonth, setCurrentDisplayYear } from "store/calendarSlice";
 import { setEmail, setName, setPicture, setToken, setIsLogin } from "store/userSlice";
 
-import { useGoogleLogin, googleLogout } from "@react-oauth/google";
+import {  googleLogout, GoogleLogin } from "@react-oauth/google";
 
 export default function Navbar() {
-
     const theme = useSelector((state : IThemeSlice) => state.theme.value);
     const { token, name, picture, isLogin } = useSelector((state : IUserSlice) => state.user);
     const dispatch = useDispatch();
@@ -37,14 +36,6 @@ export default function Navbar() {
             dispatch(setTheme('light'))
         }
     }
-
-    const login = useGoogleLogin({
-        onSuccess: (codeResponse) => {
-            dispatch(setToken(codeResponse))
-            dispatch(setIsLogin(true))
-        },
-        onError: (error) => console.log('Login Failed:', error)
-    });
 
     const logout = () => {
         googleLogout()
@@ -83,7 +74,6 @@ export default function Navbar() {
     // eslint-disable-next-line
     }, [token])
 
-
     return (
         <>
             <div className="w-full h-16 bg-base-200 bg-opacity-10 backdrop-blur-2xl flex flex-row-reverse items-center gap-4 shadow-lg ">
@@ -96,7 +86,12 @@ export default function Navbar() {
                 </div> 
                 :
                 <div className="mr-5 cursor-pointer">
-                    <button onClick={() => login()} className="btn btn-ghost">Sign in with Google</button>
+
+
+                        {/* Open the modal using document.getElementById('ID').showModal() method */}
+                        <button className="btn" onClick={()=>(document.getElementById('my_modal_1') as any).showModal()}>open modal</button>
+                        
+                        
                 </div>
                 }
 
