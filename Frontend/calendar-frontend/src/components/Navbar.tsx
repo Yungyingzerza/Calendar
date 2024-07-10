@@ -7,7 +7,9 @@ import { setTheme } from "store/themeSlice";
 import { setCurrentDisplayMonth, setCurrentDisplayYear } from "store/calendarSlice";
 import { setEmail, setName, setPicture, setToken, setIsLogin } from "store/userSlice";
 
-import {  googleLogout, GoogleLogin } from "@react-oauth/google";
+import {  googleLogout, useGoogleLogin, TokenResponse, CodeResponse } from "@react-oauth/google";
+
+import { API } from "constants/API";
 
 export default function Navbar() {
     const theme = useSelector((state : IThemeSlice) => state.theme.value);
@@ -46,33 +48,55 @@ export default function Navbar() {
         dispatch(setIsLogin(false))
     }
 
-    useEffect(() => {
-        if (isLogin && token) {
-            fetch(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token.access_token}`,{
-                headers:{
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token.access_token}`
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                dispatch(setEmail(data.email))
-                dispatch(setName(data.name))
-                dispatch(setPicture(data.picture))
-                dispatch(setIsLogin(true))
-            })
-        }
+    // useEffect(() => {
+    //     if (isLogin && token) {
+    //         fetch(`https://www.googleapis.com/oauth2/v1/userinfo`,{
+    //             headers:{
+    //                 'Accept': 'application/json',
+    //                 'Authorization': `Bearer ${token.access_token}`
+    //             }
+    //         })
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             dispatch(setEmail(data.email))
+    //             dispatch(setName(data.name))
+    //             dispatch(setPicture(data.picture))
+    //         })
+    //     }
 
-        return () => {
-            dispatch(setToken(null))
-            dispatch(setEmail(null))
-            dispatch(setName(null))
-            dispatch(setPicture(null))
-            dispatch(setIsLogin(false))
-        }
+    //     return () => {
+    //         dispatch(setToken(null))
+    //         dispatch(setEmail(null))
+    //         dispatch(setName(null))
+    //         dispatch(setPicture(null))
+    //         dispatch(setIsLogin(false))
+    //     }
 
-    // eslint-disable-next-line
-    }, [token])
+    // // eslint-disable-next-line
+    // }, [token])
+
+    const handleAuth = async (codeRes : CodeResponse) => {
+        fetch(`${API.auth}/verify`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                token: codeRes.code
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+        })
+    }
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: async codeResponse => {
+            handleAuth(codeResponse)
+        },
+        flow: 'auth-code',
+      });
 
     return (
         <>
@@ -89,7 +113,8 @@ export default function Navbar() {
 
 
                         {/* Open the modal using document.getElementById('ID').showModal() method */}
-                        <button className="btn" onClick={()=>(document.getElementById('my_modal_1') as any).showModal()}>open modal</button>
+                        {/* <button className="btn" onClick={()=>(document.getElementById('my_modal_1') as any).showModal()}>open modal</button> */}
+                        <button onClick={() => googleLogin()} className="btn btn-ghost">Sign In with Google</button>
                         
                         
                 </div>
