@@ -25,6 +25,6 @@
     "src", 
     "store",
     "interfaces", 
-    "components"  
+    "components",
   ]
 }

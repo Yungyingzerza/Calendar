@@ -3,17 +3,21 @@ import { themeChange } from 'theme-change'
 import { useDispatch, useSelector } from "react-redux";
 import { IThemeSlice } from "interfaces/IThemeSlice";
 import { IUserSlice } from "interfaces/IUserSlice";
+import { ILoadingSlice } from "interfaces/ILoadingSlice";
 import { setTheme } from "store/themeSlice";
 import { setCurrentDisplayMonth, setCurrentDisplayYear } from "store/calendarSlice";
 import { setEmail, setName, setPicture, setToken, setIsLogin } from "store/userSlice";
-
+import { setAuthenLoading } from "store/loadingSlice";
 import {  googleLogout, useGoogleLogin, TokenResponse, CodeResponse } from "@react-oauth/google";
 
 import { API } from "constants/API";
 
+import { getRefreshToken } from "utils/getRefreshToken";
+
 export default function Navbar() {
     const theme = useSelector((state : IThemeSlice) => state.theme.value);
     const { token, name, picture, isLogin } = useSelector((state : IUserSlice) => state.user);
+    const { authenLoading } = useSelector((state : ILoadingSlice) => state.loading);
     const dispatch = useDispatch();
 
     const startTheme = useState(localStorage.getItem('theme') || 'dark')[0]
@@ -48,33 +52,6 @@ export default function Navbar() {
         dispatch(setIsLogin(false))
     }
 
-    // useEffect(() => {
-    //     if (isLogin && token) {
-    //         fetch(`https://www.googleapis.com/oauth2/v1/userinfo`,{
-    //             headers:{
-    //                 'Accept': 'application/json',
-    //                 'Authorization': `Bearer ${token.access_token}`
-    //             }
-    //         })
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             dispatch(setEmail(data.email))
-    //             dispatch(setName(data.name))
-    //             dispatch(setPicture(data.picture))
-    //         })
-    //     }
-
-    //     return () => {
-    //         dispatch(setToken(null))
-    //         dispatch(setEmail(null))
-    //         dispatch(setName(null))
-    //         dispatch(setPicture(null))
-    //         dispatch(setIsLogin(false))
-    //     }
-
-    // // eslint-disable-next-line
-    // }, [token])
-
     const handleAuth = async (codeRes : CodeResponse) => {
         fetch(`${API.auth}/verify`, {
             method: 'POST',
@@ -83,11 +60,18 @@ export default function Navbar() {
             },
             body: JSON.stringify({
                 token: codeRes.code
-            })
+            }),
+            credentials: 'include'
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
+            getRefreshToken(new AbortController()).then(token => {
+                if (token) {
+                    dispatch(setToken(token))
+                    dispatch(setAuthenLoading(false))
+
+                }
+            })
         })
     }
 
@@ -100,30 +84,32 @@ export default function Navbar() {
 
     return (
         <>
-            <div className="w-full h-16 bg-base-200 bg-opacity-10 backdrop-blur-2xl flex flex-row-reverse items-center gap-4 shadow-lg ">
+            <div className="w-full h-16 bg-base-200 bg-opacity-10 backdrop-blur-2xl flex flex-row-reverse items-center gap-4 shadow-lg relative z-30">
                 
                 {isLogin && picture ? 
-                <div className="avatar mr-5 cursor-pointer">
-                    <div className="mask mask-hexagon w-10" onClick={() => logout()}>
-                        <img src={picture} alt={`${name} Profile`}  />
-                    </div>
+                <div className="avatar mr-5 ">
+                    <details className="dropdown dropdown-end">
+                        <summary className="btn btn-ghost mask mask-hexagon cursor-default">
+                            <div className="mask mask-hexagon w-10 cursor-pointer">
+                                <img src={picture} alt={`${name} Profile`}  />
+                            </div>
+                        </summary>
+                        <ul className="menu dropdown-content bg-base-100 rounded-box z-40 w-52 p-2 shadow">
+                            <li><a>Logout</a></li>
+                        </ul>
+                    </details>
                 </div> 
+                
                 :
                 <div className="mr-5 cursor-pointer">
-
-
-                        {/* Open the modal using document.getElementById('ID').showModal() method */}
-                        {/* <button className="btn" onClick={()=>(document.getElementById('my_modal_1') as any).showModal()}>open modal</button> */}
-                        <button onClick={() => googleLogin()} className="btn btn-ghost">Sign In with Google</button>
-                        
-                        
+                    <button onClick={() => googleLogin()} className="btn btn-ghost">Sign In with Google</button>      
                 </div>
                 }
 
                 
 
-
                 {isLogin && <div>Hi {name}</div>}
+                
 
                 <label className="swap swap-rotate">
                     {/* this hidden checkbox controls the state */}
