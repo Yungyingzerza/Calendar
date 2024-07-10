@@ -10,10 +10,11 @@ import { setEmail, setName, setPicture, setToken, setIsLogin } from "store/userS
 import { setAuthenLoading } from "store/loadingSlice";
 
 import { getRefreshToken } from "utils/getRefreshToken";
+import { IUserSlice } from "interfaces/IUserSlice";
 
 function App() {
   const theme = useSelector((state: IThemeSlice) => state.theme.value);
-  const token = useSelector((state: any) => state.user.token);
+  const token = useSelector((state: IUserSlice) => state.user.token);
   const dispatch = useDispatch();
 
 
