@@ -68,8 +68,6 @@ export default function Navbar() {
             getRefreshToken(new AbortController()).then(token => {
                 if (token) {
                     dispatch(setToken(token))
-                    dispatch(setAuthenLoading(false))
-
                 }
             })
         })
@@ -102,13 +100,22 @@ export default function Navbar() {
                 
                 :
                 <div className="mr-5 cursor-pointer">
-                    <button onClick={() => googleLogin()} className="btn btn-ghost">Sign In with Google</button>      
+                    {authenLoading ?
+                    <>
+                        <div className="avatar mr-5">
+                            <div className="mask mask-hexagon w-10 skeleton">
+                                
+                            </div>
+                        </div>
+                    </> 
+                    : <button onClick={() => googleLogin()} className="btn btn-ghost">Sign In with Google</button>}      
                 </div>
                 }
 
                 
 
-                {isLogin && <div>Hi {name}</div>}
+                {authenLoading ? <div className="skeleton w-24 h-4"></div> :
+                isLogin && <div>Hi {name}</div>}
                 
 
                 <label className="swap swap-rotate">

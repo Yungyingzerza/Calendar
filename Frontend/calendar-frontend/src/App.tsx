@@ -23,7 +23,9 @@ function App() {
     getRefreshToken(abortController)
     .then(data => {
         if (data) {
+          //have cookie
           dispatch(setToken(data))
+        }else{
           dispatch(setAuthenLoading(false))
         }
       })
@@ -51,6 +53,7 @@ function App() {
           dispatch(setEmail(data.email))
           dispatch(setPicture(data.picture))
           dispatch(setIsLogin(true))
+          dispatch(setAuthenLoading(false))
         })
     }
 
