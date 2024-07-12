@@ -40,7 +40,13 @@ async function refreshToken(req, res) {
     }
 }
 
+async function logout(req, res) {
+    res.clearCookie('jwt');
+    res.status(200).json({message: "Success"});
+}
+
 module.exports = {
     verify,
-    refreshToken
+    refreshToken,
+    logout
 };

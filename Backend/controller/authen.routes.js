@@ -10,4 +10,8 @@ authenRouter.get('/refreshToken', async (req, res) => {
     return await aurthenService.refreshToken(req, res);
 });
 
+authenRouter.get('/logout', async (req, res) => {
+    return await aurthenService.logout(req, res);
+});
+
 module.exports = authenRouter;

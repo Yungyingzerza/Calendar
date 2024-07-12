@@ -44,12 +44,21 @@ export default function Navbar() {
     }
 
     const logout = () => {
-        googleLogout()
-        dispatch(setToken(null))
-        dispatch(setEmail(null))
-        dispatch(setName(null))
-        dispatch(setPicture(null))
-        dispatch(setIsLogin(false))
+
+        fetch(`${API.auth}/logout`, {
+            credentials: 'include'
+        })
+        .then(res => res.json())
+        .then(data => {
+            googleLogout()
+            dispatch(setToken(null))
+            dispatch(setEmail(null))
+            dispatch(setName(null))
+            dispatch(setPicture(null))
+            dispatch(setIsLogin(false))
+        })
+
+        
     }
 
     const handleAuth = async (codeRes : CodeResponse) => {
@@ -93,7 +102,7 @@ export default function Navbar() {
                             </div>
                         </summary>
                         <ul className="menu dropdown-content bg-base-100 rounded-box z-40 w-52 p-2 shadow">
-                            <li><a>Logout</a></li>
+                            <li onClick={() => logout()}><a>Logout</a></li>
                         </ul>
                     </details>
                 </div> 
