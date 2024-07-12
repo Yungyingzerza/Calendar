@@ -148,7 +148,7 @@ export default function MiniCalendar() {
                                 // if the day is today, then render the day with a different style
                                 <button onClick={() => handleDayClick(dateDetail.day)} className={`text-sm w-full btn btn-ghost ${dateDetail.isToday && 'text-warning font-extrabold'}`}>
                                     {/* if today render with diff style */}
-                                    {dateDetail.isToday ? <div className=" gap-2"> {dateDetail.day} Today</div>
+                                    {dateDetail.isToday ? <div className=" gap-2"> {dateDetail.day}</div>
                                         :
                                         // check if the day is the selected day
                                         dateDetail.day === selectedDay && dateDetail.month === selectedMonth && dateDetail.year === selectedYear ?
