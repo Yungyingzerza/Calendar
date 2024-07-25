@@ -1,11 +1,10 @@
-import Sidebar from "components/Sidebar";
-import Navbar from "components/Navbar";
-import MainCalendar from "components/MainCalendar";
+import Sidebar from "components/Sidebar/Sidebar";
+import Navbar from "components/Navbar/Navbar";
+import MainCalendar from "components/MainCalendar/MainCalendar";
 import { useSelector, useDispatch } from "react-redux";
 import { IThemeSlice } from "interfaces/IThemeSlice";
 import LoginModal from "components/LoginModal";
 import { useEffect } from "react";
-import { API } from "constants/API";
 import { setEmail, setName, setPicture, setToken, setIsLogin } from "store/userSlice";
 import { setAuthenLoading } from "store/loadingSlice";
 
