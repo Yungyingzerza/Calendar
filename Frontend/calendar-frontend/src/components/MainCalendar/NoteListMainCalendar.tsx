@@ -1,17 +1,19 @@
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { ICalendarSlice } from "interfaces/ICalendarSlice"
 import { INoteData } from "interfaces/INoteData";
 import { IDraggedItem } from "interfaces/IDraggedItemSlice";
-import NoteDetail from "./NoteDetail";
+import { INoteListSlice } from "interfaces/INoteList";
 import { useEffect, useState } from "react";
+import { fetchNotes } from "store/noteList/action";
+import NoteDetail from "./NoteDetail";
 
-export default function NoteListMainCalendar({ hour, data }: { hour: number, data: INoteData[]}) {
+export default function NoteListMainCalendar({ hour}: { hour: number}) {
     const { selectedDay, selectedMonth, selectedYear } = useSelector((state: ICalendarSlice) => state.calendar);
     const { newHeight, newTop, id, endHour, endMinute, startHour, startMinute, title } = useSelector((state: IDraggedItem) => state.draggedItem);
 
     const [tempDraggedItem, setTempDraggedItem] = useState<IDraggedItem>({
         draggedItem: {
-            id: 0,
+            id: -1,
             title: '',
             startHour: 0,
             endHour: 0,
@@ -21,6 +23,40 @@ export default function NoteListMainCalendar({ hour, data }: { hour: number, dat
             newTop: 0
         }
     });
+
+    const dispatch = useDispatch();
+    const noteList = useSelector((state: INoteListSlice) => state.noteList);
+    const mockData = [
+        {
+            id: 1,
+            title: 'Meeting with team',
+            startHour: 10,
+            endHour: 10,
+            startMinute: 0,
+            endMinute: 30
+        },
+        {
+            id: 2,
+            title: 'Meeting with team',
+            startHour: 10,
+            endHour: 13,
+            startMinute: 20,
+            endMinute: 0
+        },
+        {
+            id: 3,
+            title: 'Meeting with team',
+            startHour: 14,
+            endHour: 18,
+            startMinute: 0,
+            endMinute: 0
+        }
+    ]
+
+    useEffect(() => {
+        dispatch(fetchNotes(mockData));
+    }, [])
+
 
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -67,7 +103,6 @@ export default function NoteListMainCalendar({ hour, data }: { hour: number, dat
         })
     }
 
-
     return (
         <>
             <div className="flex flex-row items-start w-full p-2 h-[240px] gap-6" 
@@ -82,7 +117,7 @@ export default function NoteListMainCalendar({ hour, data }: { hour: number, dat
                 <div className="flex flex-col relative w-full">
 
                     {/* note list */}
-                    {data.map((note, index) => {
+                    {noteList.map((note, index) => {
                         if (note.startHour === hour) {
                             let newHeight = (note.endHour - note.startHour) * 240 + (note.endHour - note.startHour) * 40 - (note.startMinute * 4) + (note.endMinute * 4);
                             let newTop = note.startMinute * 4;
@@ -95,7 +130,7 @@ export default function NoteListMainCalendar({ hour, data }: { hour: number, dat
                     })}
 
                     {/* dragged item */}
-                    {(tempDraggedItem) && (
+                    {(tempDraggedItem && tempDraggedItem.draggedItem.id!=-1) && (
                         <NoteDetail opacity={0.5} note={tempDraggedItem.draggedItem} newHeight={tempDraggedItem.draggedItem.newHeight} newTop={tempDraggedItem.draggedItem.newTop} />
                     )}
 
