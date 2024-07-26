@@ -3,7 +3,7 @@ import { ICalendarSlice } from "interfaces/ICalendarSlice"
 import { INoteData } from "interfaces/INoteData";
 import { IDraggedItem } from "interfaces/IDraggedItemSlice";
 import { INoteListSlice } from "interfaces/INoteList";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { addNote, deleteNote, fetchNotes } from "store/noteList/action";
 import NoteDetail from "./NoteDetail";
 
@@ -23,6 +23,10 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
             newTop: 0
         }
     });
+
+    const [currentTime, setCurrentTime] = useState<{hour:number, minute: number}>({hour: 0, minute: 0});
+    const currentTimeRef = useRef<HTMLDivElement>(null);
+    const [indicatorMounted, setIndicatorMounted] = useState<boolean>(false);
 
     const dispatch = useDispatch();
     const noteList = useSelector((state: INoteListSlice) => state.noteList);
@@ -55,7 +59,32 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
 
     useEffect(() => {
         dispatch(fetchNotes(mockData));
+
+        const interval = setInterval(() => {
+            const tempDate = new Date();
+            setCurrentTime({
+                hour: tempDate.getHours(),
+                minute: tempDate.getMinutes()
+            })
+        }, 60000);
+
+        return () => {
+            clearInterval(interval);
+        }
+
     }, [])
+
+    useEffect(() => {
+        if(currentTimeRef.current && indicatorMounted){
+            currentTimeRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+
+        return () => {
+            setIndicatorMounted(true);
+        }
+
+    }, [currentTimeRef, indicatorMounted])
+
 
 
 
@@ -132,6 +161,7 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
                     <div className="w-2 h-2 rounded-full bg-secondary mr-2"> </div>
                     <div className="text-lg font-bold"> {hour.toString().padStart(2, '0')}:00 </div>
                 </div>
+                
 
                 <div className="flex flex-col relative w-full">
 
@@ -152,6 +182,16 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
                     {(tempDraggedItem && tempDraggedItem.draggedItem.id!=-1) && (
                         <NoteDetail opacity={0.5} note={tempDraggedItem.draggedItem} newHeight={tempDraggedItem.draggedItem.newHeight} newTop={tempDraggedItem.draggedItem.newTop} />
                     )}
+
+                    {/* indicator current time */}
+                    {
+                        currentTime.hour === hour &&
+                        <>
+                            <div ref={currentTimeRef} style={{top: `${currentTime.minute * 4}px`}} className="relative bg-error w-[99%] h-0.5 right-full">
+                                <div className="relative bg-red-300 h-4 left-full w-4 rounded-full -top-2"></div>
+                            </div>
+                        </>
+                    }
 
                     {/* <div className="h-[60px] bg-info text-info-content w-full rounded-md relative top-0 flex flex-col flex-wrap gap-1 overflow-hidden">
                         <span className="text-lg"></span>
