@@ -27,6 +27,7 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
     const [currentTime, setCurrentTime] = useState<{hour:number, minute: number}>({hour: 0, minute: 0});
     const currentTimeRef = useRef<HTMLDivElement>(null);
     const [indicatorMounted, setIndicatorMounted] = useState<boolean>(false);
+    const [waitTime, setWaitTime] = useState<number>(0);
 
     const dispatch = useDispatch();
     const noteList = useSelector((state: INoteListSlice) => state.noteList);
@@ -60,19 +61,29 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
     useEffect(() => {
         dispatch(fetchNotes(mockData));
 
+        const tempDate = new Date();
+        setWaitTime(60000 - tempDate.getSeconds() * 1000 - tempDate.getMilliseconds());
+        setCurrentTime({
+            hour: tempDate.getHours(),
+            minute: tempDate.getMinutes()
+        })
+
+    }, [])
+
+    useEffect(() => {
         const interval = setInterval(() => {
             const tempDate = new Date();
+            setWaitTime(60000 - tempDate.getSeconds() * 1000 - tempDate.getMilliseconds());
             setCurrentTime({
                 hour: tempDate.getHours(),
                 minute: tempDate.getMinutes()
             })
-        }, 60000);
+        }, waitTime);
 
         return () => {
             clearInterval(interval);
         }
-
-    }, [])
+    }, [waitTime])
 
     useEffect(() => {
         if(currentTimeRef.current && indicatorMounted){
@@ -185,7 +196,7 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
 
                     {/* indicator current time */}
                     {
-                        currentTime.hour === hour &&
+                        (currentTime.hour === hour) &&
                         <>
                             <div ref={currentTimeRef} style={{top: `${currentTime.minute * 4}px`}} className="relative bg-error w-[99%] h-0.5 right-full">
                                 <div className="relative bg-red-300 h-4 left-full w-4 rounded-full -top-2"></div>
