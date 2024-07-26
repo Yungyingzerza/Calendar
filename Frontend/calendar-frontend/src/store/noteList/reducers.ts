@@ -14,7 +14,7 @@ export default createReducer([], (builder: ActionReducerMapBuilder<any[]>) => {
         return action.payload;
     });
     builder.addCase(addNote, (state, action: PayloadAction<any>) => {
-        state.push({ id: ++currentId, ...action.payload });
+        state.push({ ...action.payload });
     });
     builder.addCase(updateNote, (state, action: PayloadAction<any>) => {
         const noteIndex = state.findIndex(
@@ -24,7 +24,7 @@ export default createReducer([], (builder: ActionReducerMapBuilder<any[]>) => {
     });
     builder.addCase(deleteNote, (state, action: PayloadAction<any>) => {
         const noteIndex = state.findIndex(
-            (note) => note.id === action.payload
+            (note) => note.id === action.payload.id
         );
         state.splice(noteIndex, 1);
     });

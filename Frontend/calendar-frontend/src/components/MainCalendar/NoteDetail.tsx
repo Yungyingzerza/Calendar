@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import { INoteData } from "interfaces/INoteData";
 import { useDispatch } from "react-redux";
 import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop } from "store/draggedItemSlice";
+import { deleteNote } from "store/noteList/action";
 
 export default function NoteDetail({note, newHeight, newTop, opacity = 1} : {note :INoteData, newHeight: number, newTop: number, opacity?: number}) {
     const itemRef = useRef<HTMLDivElement>(null);
@@ -28,6 +29,7 @@ export default function NoteDetail({note, newHeight, newTop, opacity = 1} : {not
         dispatch(setNewHeight(newHeight));
         dispatch(setNewTop(newTop));
     }
+
 
     return (
         <>

@@ -4,7 +4,7 @@ import { INoteData } from "interfaces/INoteData";
 import { IDraggedItem } from "interfaces/IDraggedItemSlice";
 import { INoteListSlice } from "interfaces/INoteList";
 import { useEffect, useState } from "react";
-import { fetchNotes } from "store/noteList/action";
+import { addNote, deleteNote, fetchNotes } from "store/noteList/action";
 import NoteDetail from "./NoteDetail";
 
 export default function NoteListMainCalendar({ hour}: { hour: number}) {
@@ -103,11 +103,30 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
         })
     }
 
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        dispatch(deleteNote({id: tempDraggedItem.draggedItem.id}));
+        dispatch(addNote({...tempDraggedItem.draggedItem}));
+        setTempDraggedItem({
+            draggedItem: {
+                id: 0,
+                title: '',
+                startHour: 0,
+                endHour: 0,
+                startMinute: 0,
+                endMinute: 0,
+                newHeight: 0,
+                newTop: 0
+            }
+        })
+    }
+
     return (
         <>
             <div className="flex flex-row items-start w-full p-2 h-[240px] gap-6" 
                 onDragOver={e=>handleDragOver(e)}
                 onDragLeave={e=>handleDragLeave(e)}
+                onDrop={e=>handleDrop(e)}
                 >
                 <div className="flex flex-row items-center">
                     <div className="w-2 h-2 rounded-full bg-secondary mr-2"> </div>
