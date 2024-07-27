@@ -7,7 +7,7 @@ import NoteDetail from "./NoteDetail";
 
 export default function NoteListMainCalendar({ hour}: { hour: number}) {
     // const { selectedDay, selectedMonth, selectedYear } = useSelector((state: ICalendarSlice) => state.calendar);
-    const { newTop, id, endHour, endMinute, startHour, startMinute, title } = useSelector((state: IDraggedItem) => state.draggedItem);
+    const { newTop, id, endHour, endMinute, startHour, startMinute, title, day, month, year } = useSelector((state: IDraggedItem) => state.draggedItem);
     const noteList = useSelector((state: INoteListSlice) => state.noteList);
 
     const [tempDraggedItem, setTempDraggedItem] = useState<IDraggedItem>({
@@ -18,6 +18,9 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
             endHour: 0,
             startMinute: 0,
             endMinute: 0,
+            day: 0,
+            month: 0,
+            year: 0,
             newHeight: 0,
             newTop: 0
         }
@@ -93,6 +96,9 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
                 endHour: tempEndHour,
                 startMinute: startMinute,
                 endMinute: endMinute,
+                day: day,
+                month: month,
+                year: year,
                 newHeight: tempNewHeight,
                 newTop: newTop
         }});
@@ -108,6 +114,9 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
                 endHour: 0,
                 startMinute: 0,
                 endMinute: 0,
+                day: 0,
+                month: 0,
+                year: 0,
                 newHeight: 0,
                 newTop: 0
             }
@@ -126,6 +135,9 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
                 endHour: 0,
                 startMinute: 0,
                 endMinute: 0,
+                day: 0,
+                month: 0,
+                year: 0,
                 newHeight: 0,
                 newTop: 0
             }
@@ -169,8 +181,8 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
                     {
                         (currentTime.hour === hour) &&
                         <>
-                            <div ref={currentTimeRef} style={{top: `${currentTime.minute * 4}px`}} className="relative bg-error w-[99%] h-0.5 right-full">
-                                <div className="relative bg-red-300 h-4 left-full w-4 rounded-full -top-2"></div>
+                            <div ref={currentTimeRef} style={{top: `${currentTime.minute * 4}px`}} className="relative bg-error w-[99%] h-0.5 right-full ">
+                                <div className="relative bg-error h-4 left-full w-4 rounded-full -top-2"></div>
                             </div>
                         </>
                     }

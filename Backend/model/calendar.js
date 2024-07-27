@@ -3,23 +3,40 @@ const {sequelize} = require('../config/database');
 
 const Calendar = sequelize.define('Calendar', {
     id: {
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
     },
     title:{
         type: DataTypes.STRING,
         allowNull: false,
     },
-    description:{
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-    start:{
-        type: DataTypes.DATE,
+    startHour:{
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
-    end:{
-        type: DataTypes.DATE,
+    startMinute:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    endHour:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    endMinute:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    day:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    month:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    year:{
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     email:{

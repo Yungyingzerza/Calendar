@@ -3,6 +3,8 @@ import { IMiniCalendar } from 'interfaces/IMiniCalendar';
 import { ICalendarSlice } from 'interfaces/ICalendarSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedDay, setSelectedMonth, setSelectedYear, setCurrentDisplayMonth, setCurrentDisplayYear } from 'store/calendarSlice';
+import { API } from 'constants/API';
+import { fetchNotes } from 'store/noteList/action';
 
 export default function MiniCalendar() {
     const dispatch = useDispatch();
@@ -20,6 +22,27 @@ export default function MiniCalendar() {
 
         setCurrentDate(manualDate)
     }, [currentDisplayMonth, currentDisplayYear])
+
+    useEffect(() => {
+        const signal = new AbortController().signal;
+        fetch(`${API.calendar}/appointment`,{
+            signal,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                day: selectedDay,
+                month: selectedMonth,
+                year: selectedYear,
+            }),
+            credentials: 'include',
+        })
+        .then(response => response.json())
+        .then(data => {
+            dispatch(fetchNotes(data.appointments));
+        })
+    }, [selectedDay, selectedMonth, selectedYear])
 
     useEffect(() => {
 

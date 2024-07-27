@@ -8,6 +8,7 @@ dotenv.config();
 const app = express();
 
 const authenRouter = require('./controller/authen.routes');
+const calendarRouter = require('./controller/calendar.routes');
 
 app.use(cookieParser());
 app.use(cors({
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/authen', authenRouter);
+app.use('/calendar', calendarRouter);
 
 
 app.listen(process.env.PORT, () => {

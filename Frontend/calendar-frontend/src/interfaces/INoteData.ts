@@ -5,4 +5,7 @@ export interface INoteData {
     endHour: number;
     startMinute: number;
     endMinute: number;
+    day: number;
+    month: number;
+    year: number;
 }
