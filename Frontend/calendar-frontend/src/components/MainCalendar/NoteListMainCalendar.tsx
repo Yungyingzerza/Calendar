@@ -1,15 +1,14 @@
 import { useSelector, useDispatch } from "react-redux"
-import { ICalendarSlice } from "interfaces/ICalendarSlice"
-import { INoteData } from "interfaces/INoteData";
 import { IDraggedItem } from "interfaces/IDraggedItemSlice";
 import { INoteListSlice } from "interfaces/INoteList";
 import { useEffect, useState, useRef } from "react";
-import { addNote, deleteNote, fetchNotes } from "store/noteList/action";
+import { addNote, deleteNote } from "store/noteList/action";
 import NoteDetail from "./NoteDetail";
 
 export default function NoteListMainCalendar({ hour}: { hour: number}) {
-    const { selectedDay, selectedMonth, selectedYear } = useSelector((state: ICalendarSlice) => state.calendar);
-    const { newHeight, newTop, id, endHour, endMinute, startHour, startMinute, title } = useSelector((state: IDraggedItem) => state.draggedItem);
+    // const { selectedDay, selectedMonth, selectedYear } = useSelector((state: ICalendarSlice) => state.calendar);
+    const { newTop, id, endHour, endMinute, startHour, startMinute, title } = useSelector((state: IDraggedItem) => state.draggedItem);
+    const noteList = useSelector((state: INoteListSlice) => state.noteList);
 
     const [tempDraggedItem, setTempDraggedItem] = useState<IDraggedItem>({
         draggedItem: {
@@ -30,36 +29,8 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
     const [waitTime, setWaitTime] = useState<number>(0);
 
     const dispatch = useDispatch();
-    const noteList = useSelector((state: INoteListSlice) => state.noteList);
-    const mockData = [
-        {
-            id: 1,
-            title: 'Meeting with team',
-            startHour: 10,
-            endHour: 10,
-            startMinute: 0,
-            endMinute: 30
-        },
-        {
-            id: 2,
-            title: 'Meeting with team',
-            startHour: 10,
-            endHour: 13,
-            startMinute: 20,
-            endMinute: 0
-        },
-        {
-            id: 3,
-            title: 'Meeting with team',
-            startHour: 14,
-            endHour: 18,
-            startMinute: 0,
-            endMinute: 0
-        }
-    ]
 
     useEffect(() => {
-        dispatch(fetchNotes(mockData));
 
         const tempDate = new Date();
         setWaitTime(60000 - tempDate.getSeconds() * 1000 - tempDate.getMilliseconds());
@@ -190,7 +161,7 @@ export default function NoteListMainCalendar({ hour}: { hour: number}) {
                     })}
 
                     {/* dragged item */}
-                    {(tempDraggedItem && tempDraggedItem.draggedItem.id!=-1) && (
+                    {(tempDraggedItem && tempDraggedItem.draggedItem.id!==-1) && (
                         <NoteDetail opacity={0.5} note={tempDraggedItem.draggedItem} newHeight={tempDraggedItem.draggedItem.newHeight} newTop={tempDraggedItem.draggedItem.newTop} />
                     )}
 

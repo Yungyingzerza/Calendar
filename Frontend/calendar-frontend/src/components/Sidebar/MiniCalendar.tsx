@@ -6,13 +6,14 @@ import { setSelectedDay, setSelectedMonth, setSelectedYear, setCurrentDisplayMon
 
 export default function MiniCalendar() {
     const dispatch = useDispatch();
-
+    
     const { selectedDay, selectedMonth, selectedYear, currentDisplayMonth, currentDisplayYear } = useSelector((state: ICalendarSlice) => state.calendar)
     const [today, setToday] = useState<Date>(new Date())
     const [currentDate, setCurrentDate] = useState<Date>(new Date())
-    const [firstDayOfMonth, setFirstDayOfMonth] = useState<Date>(new Date())
-    const [lastDayOfMonth, setLastDayOfMonth] = useState<Date>(new Date())
+    const setFirstDayOfMonth = useState<Date>(new Date())[1]
+    const setLastDayOfMonth = useState<Date>(new Date())[1]
     const [fullCalendar, setFullCalendar] = useState<IMiniCalendar[]>([])
+    const [waitTime, setWaitTime] = useState<number>(0)
 
     useEffect(() => {
         const manualDate = new Date(currentDisplayYear, currentDisplayMonth, 1)
@@ -21,6 +22,11 @@ export default function MiniCalendar() {
     }, [currentDisplayMonth, currentDisplayYear])
 
     useEffect(() => {
+
+        const tempDate = new Date();
+        setWaitTime(60000 - tempDate.getSeconds() * 1000 - tempDate.getMilliseconds());
+        setToday(tempDate)
+
         dispatch(setSelectedDay(today.getDate()))
         dispatch(setSelectedMonth(today.getMonth()))
         dispatch(setSelectedYear(today.getFullYear()))
@@ -35,7 +41,37 @@ export default function MiniCalendar() {
             dispatch(setCurrentDisplayMonth(0))
             dispatch(setCurrentDisplayYear(0))
         }
+        // eslint-disable-next-line
     }, [])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const tempDate = new Date();
+            setWaitTime(60000 - tempDate.getSeconds() * 1000 - tempDate.getMilliseconds());
+            setToday(tempDate)
+        }, waitTime);
+
+        return () => {
+            clearInterval(interval);
+        }
+        // eslint-disable-next-line
+    }, [waitTime])
+
+    useEffect(() => {
+        setFullCalendar(prev => prev.map(date => {
+            if(date.isToday && date.day !== today.getDate()) {
+                return { ...date, isToday: false }
+            }
+            return date
+        }))
+
+        setFullCalendar(prev => prev.map(date => {
+            if(date.day === today.getDate() && date.month === today.getMonth() && date.year === today.getFullYear()) {
+                return { ...date, isToday: true }
+            }
+            return date
+        }))
+    }, [today])
 
     const getDayOfWeek = (date: Date) => {
         return date.getDay()
@@ -44,11 +80,6 @@ export default function MiniCalendar() {
     const getNameOfMonth = (month: number) => {
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         return monthNames[month]
-    }
-
-    const getNameOfDay = (date: Date) => {
-        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-        return dayNames[date.getDay()]
     }
 
     const Days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -89,7 +120,7 @@ export default function MiniCalendar() {
         return () => {
             setFullCalendar([])
         }
-
+// eslint-disable-next-line
     }, [currentDate])
 
     const handleNextMonth = () => {
@@ -144,7 +175,7 @@ export default function MiniCalendar() {
                     {fullCalendar.map((dateDetail, index) => (
                         <div key={index} className='flex flex-col items-center justify-center'>
                             {/* if the day is not 0, then render the day */}
-                            {dateDetail.day != 0 &&
+                            {dateDetail.day !== 0 &&
                                 // if the day is today, then render the day with a different style
                                 <button onClick={() => handleDayClick(dateDetail.day)} className={`text-sm w-full btn btn-ghost ${dateDetail.isToday && 'text-warning font-extrabold'}`}>
                                     {/* if today render with diff style */}

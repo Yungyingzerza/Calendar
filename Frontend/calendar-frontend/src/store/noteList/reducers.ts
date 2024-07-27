@@ -7,8 +7,6 @@ import {
     updateNote    
 } from "./action";
 
-let currentId = 0;
-
 export default createReducer([], (builder: ActionReducerMapBuilder<any[]>) => {
     builder.addCase(fetchNotes, (state, action: PayloadAction<any>) => {
         return action.payload;
