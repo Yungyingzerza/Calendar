@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IMiniCalendar } from 'interfaces/IMiniCalendar';
 import { ICalendarSlice } from 'interfaces/ICalendarSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedDay, setSelectedMonth, setSelectedYear, setCurrentDisplayMonth, setCurrentDisplayYear } from 'store/calendarSlice';
-import { API } from 'constants/API';
-import { fetchNotes } from 'store/noteList/action';
+import { useGetAppointments } from 'hooks/useGetAppointments';
 
-export default function MiniCalendar() {
+export default function useViewModel() {
     const dispatch = useDispatch();
     
     const { selectedDay, selectedMonth, selectedYear, currentDisplayMonth, currentDisplayYear } = useSelector((state: ICalendarSlice) => state.calendar)
@@ -16,6 +15,8 @@ export default function MiniCalendar() {
     const setLastDayOfMonth = useState<Date>(new Date())[1]
     const [fullCalendar, setFullCalendar] = useState<IMiniCalendar[]>([])
     const [waitTime, setWaitTime] = useState<number>(0)
+    
+    useGetAppointments(selectedDay, selectedMonth, selectedYear);
 
     useEffect(() => {
         const manualDate = new Date(currentDisplayYear, currentDisplayMonth, 1)
@@ -23,26 +24,6 @@ export default function MiniCalendar() {
         setCurrentDate(manualDate)
     }, [currentDisplayMonth, currentDisplayYear])
 
-    useEffect(() => {
-        const signal = new AbortController().signal;
-        fetch(`${API.calendar}/appointment`,{
-            signal,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                day: selectedDay,
-                month: selectedMonth,
-                year: selectedYear,
-            }),
-            credentials: 'include',
-        })
-        .then(response => response.json())
-        .then(data => {
-            dispatch(fetchNotes(data.appointments));
-        })
-    }, [selectedDay, selectedMonth, selectedYear])
 
     useEffect(() => {
 
@@ -171,51 +152,19 @@ export default function MiniCalendar() {
         dispatch(setCurrentDisplayMonth(newDate.getMonth()))
         dispatch(setCurrentDisplayYear(newDate.getFullYear()))
     }
-    return (
-        <>
-            {/* header  */}
-            <header className='flex flex-row justify-center items-center'>
-                <div className='flex flex-row justify-center items-center gap-2'>
-                    <button onClick={() => handlePrevMonth()} className="join-item btn btn-ghost text-xl font-bold">«</button>
-                    <h1 className='text-2xl font-bold'>{getNameOfMonth(currentDisplayMonth)}</h1>
-                    <input type='number' onChange={(e) => handleYearChange(e)} value={currentDisplayYear} className='input text-2xl font-bold w-24 bg-transparent' />
-                    <button onClick={() => handleNextMonth()} className="join-item btn btn-ghost text-xl font-bold">»</button>
-                </div>
-            </header>
 
-            <main>
-                {/* Title of Day */}
-                <header className='flex flex-row justify-center items-center'>
-                    {Days.map((day, index) => (
-                        <div key={index} className='w-full text-center'>
-                            <h1 className="text-sm font-light">{day}</h1>
-                        </div>
-                    ))}
-                </header>
-
-                {/* Calendar */}
-                <div className='grid grid-cols-7 gap-1'>
-                    {fullCalendar.map((dateDetail, index) => (
-                        <div key={index} className='flex flex-col items-center justify-center'>
-                            {/* if the day is not 0, then render the day */}
-                            {dateDetail.day !== 0 &&
-                                // if the day is today, then render the day with a different style
-                                <button onClick={() => handleDayClick(dateDetail.day)} className={`text-sm w-full btn btn-ghost ${dateDetail.isToday && 'text-warning font-extrabold'}`}>
-                                    {/* if today render with diff style */}
-                                    {dateDetail.isToday ? <div className=" gap-2"> {dateDetail.day}</div>
-                                        :
-                                        // check if the day is the selected day
-                                        dateDetail.day === selectedDay && dateDetail.month === selectedMonth && dateDetail.year === selectedYear ?
-                                            <div className="badge badge-error gap-2"> {dateDetail.day} </div>
-                                            :
-                                            dateDetail.day
-                                    }
-                                </button>
-                            }
-                        </div>
-                    ))}
-                </div>
-            </main>
-        </>
-    )
+    return{
+        Days,
+        getNameOfMonth,
+        fullCalendar,
+        handleDayClick,
+        handleNextMonth,
+        handlePrevMonth,
+        handleYearChange,
+        selectedDay,
+        selectedMonth,
+        selectedYear,
+        currentDisplayMonth,
+        currentDisplayYear
+    }
 }
