@@ -4,9 +4,10 @@ import { INoteListSlice } from "interfaces/INoteList";
 import { useEffect, useState, useRef } from "react";
 import { addNote, deleteNote } from "store/noteList/action";
 
-export default function useViewModel({ hour}: { hour: number}) {
+export default function useViewModel({ hour, propDate }: { hour: number, propDate?: Date }) {
     const { newTop, id, endHour, endMinute, startHour, startMinute, title, day, month, year } = useSelector((state: IDraggedItem) => state.draggedItem);
     const noteList = useSelector((state: INoteListSlice) => state.noteList);
+    const [date, setDate] = useState<Date>();
 
     const [tempDraggedItem, setTempDraggedItem] = useState<IDraggedItem>({
         draggedItem: {
@@ -32,6 +33,8 @@ export default function useViewModel({ hour}: { hour: number}) {
     const dispatch = useDispatch();
 
     useEffect(() => {
+
+        if(propDate) setDate(propDate);
 
         const tempDate = new Date();
         setWaitTime(60000 - tempDate.getSeconds() * 1000 - tempDate.getMilliseconds());
@@ -142,5 +145,5 @@ export default function useViewModel({ hour}: { hour: number}) {
         })
     }
 
-    return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop }
+    return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, date }
 }

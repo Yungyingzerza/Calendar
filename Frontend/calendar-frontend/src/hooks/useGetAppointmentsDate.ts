@@ -2,11 +2,16 @@ import { API } from "constants/API";
 import { fetchNotes } from 'store/noteList/action';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import getAppointmentsMapper from "utils/getAppointmentsMapper";
 
-export function useGetAppointments(day: number, month: number, year: number) {
+export function useGetAppointmentsDate(day: number, month: number, year: number) {
     const dispatch = useDispatch();
-
+    const location = useLocation();
     useEffect(() => {
+        if(location.pathname !== '/day'){
+            return;
+        }
         const abortController = new AbortController();
         const fetchAppointments = () => {
             fetch(`${API.calendar}/appointment?day=${day}&month=${month}&year=${year}`, {
@@ -18,13 +23,12 @@ export function useGetAppointments(day: number, month: number, year: number) {
                 credentials: 'include',
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
                 return response.json();
             })
             .then(data => {
-                dispatch(fetchNotes(data.appointments));
+                if(data){
+                    dispatch(fetchNotes(getAppointmentsMapper(data.appointments)));
+                }
             })
             .catch(error => {
                 if (error.name !== 'AbortError') {

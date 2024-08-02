@@ -11,32 +11,12 @@ const Calendar = sequelize.define('Calendar', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    startHour:{
-        type: DataTypes.INTEGER,
+    start:{
+        type: DataTypes.DATE,
         allowNull: false,
     },
-    startMinute:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    endHour:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    endMinute:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    day:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    month:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    year:{
-        type: DataTypes.INTEGER,
+    end:{
+        type: DataTypes.DATE,
         allowNull: false,
     },
     email:{

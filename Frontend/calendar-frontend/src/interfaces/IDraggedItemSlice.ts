@@ -2,7 +2,7 @@
 
 export interface IDraggedItem {
     draggedItem:{
-        id: number;
+        id: string;
         title: string;
         startHour: number;
         endHour: number;

@@ -1,5 +1,5 @@
 export interface INoteData {
-    id: number;
+    id: string;
     title: string;
     startHour: number;
     endHour: number;

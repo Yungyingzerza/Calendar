@@ -3,11 +3,11 @@ import { IMiniCalendar } from 'interfaces/IMiniCalendar';
 import { ICalendarSlice } from 'interfaces/ICalendarSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedDay, setSelectedMonth, setSelectedYear, setCurrentDisplayMonth, setCurrentDisplayYear } from 'store/calendarSlice';
-import { useGetAppointments } from 'hooks/useGetAppointments';
+import { useGetAppointmentsDate } from 'hooks/useGetAppointmentsDate';
+import { useGetAppointmentsWeek } from 'hooks/useGetAppointmentsWeek';
 
 export default function useViewModel() {
     const dispatch = useDispatch();
-    
     const { selectedDay, selectedMonth, selectedYear, currentDisplayMonth, currentDisplayYear } = useSelector((state: ICalendarSlice) => state.calendar)
     const [today, setToday] = useState<Date>(new Date())
     const [currentDate, setCurrentDate] = useState<Date>(new Date())
@@ -16,17 +16,20 @@ export default function useViewModel() {
     const [fullCalendar, setFullCalendar] = useState<IMiniCalendar[]>([])
     const [waitTime, setWaitTime] = useState<number>(0)
     
-    useGetAppointments(selectedDay, selectedMonth, selectedYear);
+    //it will fetch only if the location is /day
+    useGetAppointmentsDate(selectedDay, selectedMonth, selectedYear);
+    //it will fetch only if the location is /week
+    useGetAppointmentsWeek(selectedDay, selectedMonth, selectedYear);
+
 
     useEffect(() => {
         const manualDate = new Date(currentDisplayYear, currentDisplayMonth, 1)
-
+        
         setCurrentDate(manualDate)
     }, [currentDisplayMonth, currentDisplayYear])
 
 
     useEffect(() => {
-
         const tempDate = new Date();
         setWaitTime(60000 - tempDate.getSeconds() * 1000 - tempDate.getMilliseconds());
         setToday(tempDate)
