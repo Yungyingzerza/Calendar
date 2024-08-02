@@ -18,6 +18,7 @@ async function getAppointmentsByDate(req, res) {
         if(!req.query.day || !req.query.month || !req.query.year) return res.status(400).json({message: "Invalid date"});
 
         jsonwebtoken.verify(req.cookies.jwt, process.env.JWT_SECRET, async (err, decoded) => {   
+            if(err) return res.status(401).json({message: "Invalid token"});
 
             if(decoded){
                 const email = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo`,{
