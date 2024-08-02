@@ -3,12 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App/App';
 import reportWebVitals from './reportWebVitals';
-
 import store from 'store/store';
 import { Provider } from 'react-redux';
-
 import { GoogleOAuthProvider } from '@react-oauth/google';
-
+import { BrowserRouter } from "react-router-dom";
 
 
 const root = ReactDOM.createRoot(
@@ -19,9 +17,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}>
     <React.StrictMode>
-      <Provider store={store}>    
-        <App />
-      </Provider>
+      <BrowserRouter>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </BrowserRouter>
     </React.StrictMode>
   </GoogleOAuthProvider>
 );

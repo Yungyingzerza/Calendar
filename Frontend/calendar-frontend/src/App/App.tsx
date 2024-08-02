@@ -3,6 +3,11 @@ import Sidebar from "components/Sidebar/Sidebar";
 import Navbar from "components/Navbar/Navbar";
 import MainCalendar from "components/MainCalendar/MainCalendar";
 import LoginModal from "components/LoginModal";
+import {
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 function App() {
   const { theme } = useViewModel();
@@ -26,7 +31,13 @@ function App() {
               <Navbar />
             </div>
             <div className="w-[calc(100%-75px)] h-[calc(100vh-75px)] rounded-2xl bg-base-200 bg-opacity-20 backdrop-blur-2xl shadow-xl p-2 my-5 overflow-auto scroll-smooth">
-              <MainCalendar />
+              <Routes>
+                <Route path="/" element={<Navigate to="/day" />} />
+                <Route path="/day" element={<MainCalendar />} />
+                <Route path="/week" element={<div>Week</div>} />
+                <Route path="/month" element={<div>Month</div>} />
+                <Route path="*" element={<Navigate to="/day" />} />
+              </Routes>
             </div>
           </div>
         </div>
