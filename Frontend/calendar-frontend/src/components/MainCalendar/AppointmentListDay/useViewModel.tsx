@@ -1,12 +1,16 @@
 import { useSelector, useDispatch } from "react-redux"
 import { IDraggedItem } from "interfaces/IDraggedItemSlice";
 import { INoteListSlice } from "interfaces/INoteList";
+import { ICalendarSlice } from "interfaces/ICalendarSlice";
 import { useEffect, useState, useRef } from "react";
 import { addNote, deleteNote } from "store/noteList/action";
+import { useUpdateAppointmentsById } from "hooks/useUpdateAppointmentsById";
 
 export default function useViewModel({ hour}: { hour: number}) {
     const { newTop, id, endHour, endMinute, startHour, startMinute, title, day, month, year } = useSelector((state: IDraggedItem) => state.draggedItem);
+    const {selectedDay, selectedMonth, selectedYear} = useSelector((state: ICalendarSlice) => state.calendar);
     const noteList = useSelector((state: INoteListSlice) => state.noteList);
+
 
     const [tempDraggedItem, setTempDraggedItem] = useState<IDraggedItem>({
         draggedItem: {
@@ -30,6 +34,8 @@ export default function useViewModel({ hour}: { hour: number}) {
     const [waitTime, setWaitTime] = useState<number>(0);
 
     const dispatch = useDispatch();
+
+    const { updateAppointments } = useUpdateAppointmentsById(tempDraggedItem.draggedItem);
 
     useEffect(() => {
 
@@ -94,9 +100,9 @@ export default function useViewModel({ hour}: { hour: number}) {
                 endHour: tempEndHour,
                 startMinute: startMinute,
                 endMinute: endMinute,
-                day: day,
-                month: month,
-                year: year,
+                day: selectedDay,
+                month: selectedMonth,
+                year: selectedYear,
                 newHeight: tempNewHeight,
                 newTop: newTop
         }});
@@ -106,7 +112,7 @@ export default function useViewModel({ hour}: { hour: number}) {
         e.preventDefault();
         setTempDraggedItem({
             draggedItem: {
-                id: "0",
+                id: "-1",
                 title: '',
                 startHour: 0,
                 endHour: 0,
@@ -123,11 +129,12 @@ export default function useViewModel({ hour}: { hour: number}) {
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
+        updateAppointments();
         dispatch(deleteNote({id: tempDraggedItem.draggedItem.id}));
         dispatch(addNote({...tempDraggedItem.draggedItem}));
         setTempDraggedItem({
             draggedItem: {
-                id: "0",
+                id: "-1",
                 title: '',
                 startHour: 0,
                 endHour: 0,

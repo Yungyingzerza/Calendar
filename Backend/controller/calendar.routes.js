@@ -6,9 +6,15 @@ calendarRouter.get('/appointment/', async (req, res) => {
     return await calendarService.getAppointmentsByDate(req, res);
 });
 
+calendarRouter.patch('/appointment/', async (req, res) => {
+    return await calendarService.updateAppointmentsById(req, res);
+});
+
 calendarRouter.get('/appointment/week', async (req, res) => {
     return await calendarService.getAppointmentsByWeek(req, res);
 });
+
+
 
 
 module.exports = calendarRouter;

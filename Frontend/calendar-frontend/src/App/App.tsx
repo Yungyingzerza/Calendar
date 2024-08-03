@@ -18,20 +18,20 @@ function App() {
       <div className="relative h-full w-full bg-base-100" >
         <div className={`absolute inset-0 bg-pink-400 bg-[size:20px_20px] ${theme === 'dark' ? 'opacity-15' : 'opacity-50'} blur-[350px] z-10`}> </div>
         <LoginModal />
-        <div className="flex flex-col md:flex-row flex-wrap relative z-20">
+        <div className="flex flex-col min-[900px]:flex-row flex-wrap relative z-20">
           {/* Mobile */}
-          <div className="w-full md:hidden block">
+          <div className="w-full min-[900px]:hidden block">
             <Navbar />
           </div>
-          <div className="w-full md:w-72 md:h-screen">
+          <div className="w-full min-[900px]:w-72 min-[900px]:h-screen">
             <Sidebar />
           </div>
           <div className="flex-1 flex flex-col h-screen justify-center items-center">
             {/* PC */}
-            <div className="w-full md:block hidden">
+            <div className="w-full min-[900px]:block hidden">
               <Navbar />
             </div>
-            <div className="w-[calc(100%-75px)] h-[calc(100vh-75px)] rounded-2xl bg-base-200 bg-opacity-20 backdrop-blur-2xl shadow-xl p-2 my-5 overflow-auto scroll-smooth">
+            <div className="max-w-[calc(100vw-75px)] w-[calc(100%-75px)] h-[calc(100vh-75px)] rounded-2xl bg-base-200 bg-opacity-20 backdrop-blur-2xl shadow-xl p-2 my-5 overflow-auto scroll-smooth">
               <Routes>
                 <Route path="/" element={<Navigate to="/day" />} />
                 <Route path="/day" element={<MainCalendarDay />} />

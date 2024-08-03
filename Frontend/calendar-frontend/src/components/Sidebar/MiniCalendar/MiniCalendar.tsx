@@ -6,11 +6,11 @@ export default function MiniCalendar() {
         <>
             {/* header  */}
             <header className='flex flex-row justify-center items-center'>
-                <div className='flex flex-row justify-center items-center gap-2'>
-                    <button onClick={() => handlePrevMonth()} className="join-item btn btn-ghost text-xl font-bold">«</button>
-                    <h1 className='text-2xl font-bold'>{getNameOfMonth(currentDisplayMonth)}</h1>
-                    <input type='number' onChange={(e) => handleYearChange(e)} value={currentDisplayYear} className='input text-2xl font-bold w-24 bg-transparent' />
-                    <button onClick={() => handleNextMonth()} className="join-item btn btn-ghost text-xl font-bold">»</button>
+                <div className='flex flex-row justify-center items-center gap-2 min-[900px]:gap-1'>
+                    <button onClick={() => handlePrevMonth()} className="join-item btn btn-ghost text-xl min-[900px]:text-lg font-bold">«</button>
+                    <h1 className='text-2xl min-[900px]:text-xl font-bold'>{getNameOfMonth(currentDisplayMonth)}</h1>
+                    <input type='number' onChange={(e) => handleYearChange(e)} value={currentDisplayYear} className='input text-2xl min-[900px]:text-xl font-bold w-24 min-[900px]:w-22 bg-transparent' />
+                    <button onClick={() => handleNextMonth()} className="join-item btn btn-ghost text-xl min-[900px]:text-lg font-bold">»</button>
                 </div>
             </header>
 

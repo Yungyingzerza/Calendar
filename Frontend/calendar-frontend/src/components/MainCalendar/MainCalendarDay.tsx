@@ -1,5 +1,5 @@
 
-import AppointmentList from "./AppointmentList/AppointmentList";
+import AppointmentList from "./AppointmentListDay/AppointmentList";
 import { INoteListSlice } from "interfaces/INoteList";
 import { useSelector } from "react-redux"
 

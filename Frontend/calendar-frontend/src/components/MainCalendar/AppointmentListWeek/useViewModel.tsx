@@ -3,6 +3,7 @@ import { IDraggedItem } from "interfaces/IDraggedItemSlice";
 import { INoteListSlice } from "interfaces/INoteList";
 import { useEffect, useState, useRef } from "react";
 import { addNote, deleteNote } from "store/noteList/action";
+import { useUpdateAppointmentsById } from "hooks/useUpdateAppointmentsById";
 
 export default function useViewModel({ hour, propDate }: { hour: number, propDate?: Date }) {
     const { newTop, id, endHour, endMinute, startHour, startMinute, title, day, month, year } = useSelector((state: IDraggedItem) => state.draggedItem);
@@ -31,6 +32,8 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
     const [waitTime, setWaitTime] = useState<number>(0);
 
     const dispatch = useDispatch();
+
+    const { updateAppointments } = useUpdateAppointmentsById(tempDraggedItem.draggedItem);
 
     useEffect(() => {
 
@@ -97,9 +100,9 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
                 endHour: tempEndHour,
                 startMinute: startMinute,
                 endMinute: endMinute,
-                day: day,
-                month: month,
-                year: year,
+                day: propDate?.getDate() || 0,
+                month: propDate?.getMonth() || 0,
+                year: propDate?.getFullYear() || 0,
                 newHeight: tempNewHeight,
                 newTop: newTop
         }});
@@ -109,7 +112,7 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
         e.preventDefault();
         setTempDraggedItem({
             draggedItem: {
-                id: "0",
+                id: "-1",
                 title: '',
                 startHour: 0,
                 endHour: 0,
@@ -126,11 +129,12 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
+        updateAppointments();
         dispatch(deleteNote({id: tempDraggedItem.draggedItem.id}));
         dispatch(addNote({...tempDraggedItem.draggedItem}));
         setTempDraggedItem({
             draggedItem: {
-                id: "0",
+                id: "-1",
                 title: '',
                 startHour: 0,
                 endHour: 0,
