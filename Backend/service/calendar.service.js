@@ -29,8 +29,10 @@ async function getAppointmentsByDate(req, res) {
                 }).then(res => {
                     return res.data.email;
                 }).catch(err => {
-                    return res.status(401).json({message: "Invalid token"});
+                    return "error";
                 });
+                
+                if(email === "error") return res.status(401).json({message: "Invalid token"});
 
                 const day = new Date(req.query.year, req.query.month, req.query.day);
 
@@ -39,12 +41,32 @@ async function getAppointmentsByDate(req, res) {
                 const appointments = await Calendar.findAll({
                     where:{
                         email: email,
-                        start:{
-                            [Op.between]: [new Date(day.getFullYear(), day.getMonth(), day.getDate()), new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1)]
-                        },
-                        end:{
-                            [Op.between]: [new Date(day.getFullYear(), day.getMonth(), day.getDate()), new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1)]
-                        }
+                        [Op.or]: [
+                            {
+                                start:{
+                                    [Op.between]: [new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0), new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59)]
+                                }
+                            },
+                            {
+                                end:{
+                                    [Op.between]: [new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0), new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59)]
+                                }
+                            },
+                            {
+                                [Op.and]: [
+                                    {
+                                        start:{
+                                            [Op.lte]: new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0)
+                                        }
+                                    },
+                                    {
+                                        end:{
+                                            [Op.gte]: new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59)
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
                         
                     },
                     attributes: ['id','title', 'start', 'end']
@@ -85,8 +107,10 @@ async function getAppointmentsByWeek(req, res) {
                 }).then(res => {
                     return res.data.email;
                 }).catch(err => {
-                    return res.status(401).json({message: "Invalid token"});
+                    return "error";
                 });
+
+                if(email === "error") return res.status(401).json({message: "Invalid token"});
 
                 const tempDate = new Date(req.query.year, req.query.month, req.query.day);
                 const dayOfWeek = tempDate.getDay();
@@ -96,12 +120,28 @@ async function getAppointmentsByWeek(req, res) {
                 const appointments = await Calendar.findAll({
                     where:{
                         email: email,
-                        start:{
-                            [Op.between]: [sunday, saturday]
-                        },
-                        end:{
-                            [Op.between]: [sunday, saturday]
-                        }                        
+                        [Op.or]:[
+                            [
+                                {
+                                    start:{
+                                        [Op.between]: [new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate(), 0, 0, 0), new Date(saturday.getFullYear(), saturday.getMonth(), saturday.getDate(), 23, 59, 59)]
+                                    },
+                                    end:{
+                                        [Op.between]: [new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate(), 0, 0, 0), new Date(saturday.getFullYear(), saturday.getMonth(), saturday.getDate(), 23, 59, 59)]
+                                    }
+                                }
+                            ],
+                            [
+                                {
+                                    start:{
+                                        [Op.lt]: new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate(), 0, 0, 0)
+                                    },
+                                    end:{
+                                        [Op.gt]: new Date(saturday.getFullYear(), saturday.getMonth(), saturday.getDate(), 23, 59, 59)
+                                    }
+                                }
+                            ]
+                        ] 
                     },
                     attributes: ['id','title', 'start', 'end']
                 });
@@ -141,8 +181,10 @@ async function updateAppointmentsById(req, res) {
                 }).then(res => {
                     return res.data.email;
                 }).catch(err => {
-                    return res.status(401).json({message: "Invalid token"});
+                    return "error";
                 });
+
+                if(email === "error") return res.status(401).json({message: "Invalid token"});
 
                 const appointment = await Calendar.findOne({
                     where:{

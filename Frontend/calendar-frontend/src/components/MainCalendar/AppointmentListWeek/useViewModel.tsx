@@ -6,7 +6,7 @@ import { addNote, deleteNote } from "store/noteList/action";
 import { useUpdateAppointmentsById } from "hooks/useUpdateAppointmentsById";
 
 export default function useViewModel({ hour, propDate }: { hour: number, propDate?: Date }) {
-    const { newTop, id, endHour, endMinute, startHour, startMinute, title, day, month, year } = useSelector((state: IDraggedItem) => state.draggedItem);
+    const { newTop, id, endHour, endMinute, startHour, startMinute, title, startDay, startMonth, startYear, endDay, endMonth, endYear  } = useSelector((state: IDraggedItem) => state.draggedItem);
     const noteList = useSelector((state: INoteListSlice) => state.noteList);
     const [date, setDate] = useState<Date>();
 
@@ -18,9 +18,12 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
             endHour: 0,
             startMinute: 0,
             endMinute: 0,
-            day: 0,
-            month: 0,
-            year: 0,
+            startDay: 0,
+            endDay: 0,
+            startMonth: 0,
+            endMonth: 0,
+            startYear: 0,
+            endYear: 0,
             newHeight: 0,
             newTop: 0
         }
@@ -100,9 +103,12 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
                 endHour: tempEndHour,
                 startMinute: startMinute,
                 endMinute: endMinute,
-                day: propDate?.getDate() || 0,
-                month: propDate?.getMonth() || 0,
-                year: propDate?.getFullYear() || 0,
+                startDay: startDay,
+                endDay: endDay,
+                startMonth: startMonth,
+                endMonth: endMonth,
+                startYear: startYear,
+                endYear: endYear,
                 newHeight: tempNewHeight,
                 newTop: newTop
         }});
@@ -118,9 +124,12 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
                 endHour: 0,
                 startMinute: 0,
                 endMinute: 0,
-                day: 0,
-                month: 0,
-                year: 0,
+                startDay: 0,
+                endDay: 0,
+                startMonth: 0,
+                endMonth: 0,
+                startYear: 0,
+                endYear: 0,
                 newHeight: 0,
                 newTop: 0
             }
@@ -140,9 +149,12 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
                 endHour: 0,
                 startMinute: 0,
                 endMinute: 0,
-                day: 0,
-                month: 0,
-                year: 0,
+                startDay: 0,
+                endDay: 0,
+                startMonth: 0,
+                endMonth: 0,
+                startYear: 0,
+                endYear: 0,
                 newHeight: 0,
                 newTop: 0
             }

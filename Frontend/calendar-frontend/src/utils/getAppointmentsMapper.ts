@@ -13,9 +13,12 @@ export default function getAppointmentsMapper(backendData : {id: string, title: 
             endHour: end.getHours(),
             startMinute: start.getMinutes(),
             endMinute: end.getMinutes(),
-            day: start.getDate(),
-            month: start.getMonth(),
-            year: start.getFullYear()
+            startDay: start.getDate(),
+            endDay: end.getDate(),
+            startMonth: start.getMonth(),
+            endMonth: end.getMonth(),
+            startYear: start.getFullYear(),
+            endYear: end.getFullYear()
         })
     })
 

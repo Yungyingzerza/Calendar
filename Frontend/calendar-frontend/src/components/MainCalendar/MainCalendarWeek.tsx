@@ -29,6 +29,8 @@ export default function MainCalendar() {
         <>
             <div className="flex flex-col gap-10">
                 <h1 className="self-center mt-5 text-2xl sm:text-3xl font-bold text-primary">Appointment : {noteList.length}</h1>
+
+                
                 {Array.from({ length: 24 }, (_, index) => (
                     <div key={index} className="flex flex-row gap-1">
                         {/* Show only time */}

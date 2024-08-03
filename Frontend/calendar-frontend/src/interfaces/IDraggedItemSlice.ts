@@ -8,9 +8,12 @@ export interface IDraggedItem {
         endHour: number;
         startMinute: number;
         endMinute: number;
-        day: number;
-        month: number;
-        year: number;
+        startDay: number;
+        endDay: number;
+        startMonth: number;
+        endMonth: number;
+        startYear: number;
+        endYear: number;
         newTop: number
         newHeight: number
     }

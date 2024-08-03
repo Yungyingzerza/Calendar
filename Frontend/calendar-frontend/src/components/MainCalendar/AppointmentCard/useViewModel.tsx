@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop } from "store/draggedItemSlice";
 import { INoteData } from "interfaces/INoteData";
@@ -29,6 +29,7 @@ export default function useViewModel({note, newHeight, newTop, opacity = 1} : {n
         dispatch(setNewHeight(newHeight));
         dispatch(setNewTop(newTop));
     }
+
 
     return { itemRef, handleDragStart }
 }
