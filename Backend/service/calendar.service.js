@@ -41,32 +41,18 @@ async function getAppointmentsByDate(req, res) {
                 const appointments = await Calendar.findAll({
                     where:{
                         email: email,
-                        [Op.or]: [
-                            {
-                                start:{
-                                    [Op.between]: [new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0), new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59)]
-                                }
-                            },
-                            {
-                                end:{
-                                    [Op.between]: [new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0), new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59)]
-                                }
-                            },
-                            {
-                                [Op.and]: [
-                                    {
-                                        start:{
-                                            [Op.lte]: new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0)
-                                        }
-                                    },
-                                    {
-                                        end:{
-                                            [Op.gte]: new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59)
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
+                        start:{
+                            [Op.or]: [
+                                {[Op.between]: [new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0), new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59)]},
+                                {[Op.lte]: new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0)},
+                            ]
+                        },
+                        end:{
+                            [Op.or]: [
+                                {[Op.between]: [new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0), new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59)]},
+                                {[Op.gte]: new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59)},
+                            ]
+                        }
                         
                     },
                     attributes: ['id','title', 'start', 'end']
@@ -115,33 +101,23 @@ async function getAppointmentsByWeek(req, res) {
                 const tempDate = new Date(req.query.year, req.query.month, req.query.day);
                 const dayOfWeek = tempDate.getDay();
                 const sunday = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate() - dayOfWeek);
-                const saturday = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate() + (6 - dayOfWeek) + 1);
+                const saturday = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate() + (6 - dayOfWeek) );
 
                 const appointments = await Calendar.findAll({
                     where:{
                         email: email,
-                        [Op.or]:[
-                            [
-                                {
-                                    start:{
-                                        [Op.between]: [new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate(), 0, 0, 0), new Date(saturday.getFullYear(), saturday.getMonth(), saturday.getDate(), 23, 59, 59)]
-                                    },
-                                    end:{
-                                        [Op.between]: [new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate(), 0, 0, 0), new Date(saturday.getFullYear(), saturday.getMonth(), saturday.getDate(), 23, 59, 59)]
-                                    }
-                                }
-                            ],
-                            [
-                                {
-                                    start:{
-                                        [Op.lt]: new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate(), 0, 0, 0)
-                                    },
-                                    end:{
-                                        [Op.gt]: new Date(saturday.getFullYear(), saturday.getMonth(), saturday.getDate(), 23, 59, 59)
-                                    }
-                                }
+                        start:{
+                            [Op.or]: [
+                                {[Op.between]: [sunday, saturday]},
+                                {[Op.lte]: sunday},
                             ]
-                        ] 
+                        },
+                        end:{
+                            [Op.or]: [
+                                {[Op.between]: [sunday, saturday]},
+                                {[Op.gte]: saturday},
+                            ]
+                        }
                     },
                     attributes: ['id','title', 'start', 'end']
                 });
