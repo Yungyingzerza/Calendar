@@ -37,11 +37,11 @@ export default function AppointmentListWeek({ hour, displayTime = true, showCont
 
                             const isDateInWeek = (startDay <= thisDay && endDay >= thisDay);
 
-                            if (diffTime > 86400000 && isDateInWeek && dayOfWeek !== -1) {
+                            if (diffTime >= 86400000 && isDateInWeek && dayOfWeek !== -1) {
                                 return (
                                     <div key={`${index}-${note.id}-${thisDay.getTime}`} className=" h-6 w-[calc(100%+1rem)] relative self-center rounded-md bg-secondary text-secondary-content">{note.title}</div>
                                 )
-                            }else if(diffTime > 86400000){
+                            }else if(diffTime >= 86400000){
                                 return <div key={`${index}-${note.id}-${thisDay.getTime}`} className="h-6 w-[calc(100%+1rem)] relative bg-transparent self-center rounded-md"></div>
                             }
 

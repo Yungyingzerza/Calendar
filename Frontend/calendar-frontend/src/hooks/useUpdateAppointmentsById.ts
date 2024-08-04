@@ -1,5 +1,5 @@
 import { API } from "constants/API";
-import { fetchNotes } from 'store/noteList/action';
+import { fetchNotes, updateNote } from 'store/noteList/action';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import getAppointmentsMapper from "utils/getAppointmentsMapper";
@@ -28,6 +28,8 @@ export function useUpdateAppointmentsById(dataToUpdate: INoteData) {
             })
             .then(response => {
                 return response.json();
+            }).then(data => {
+                dispatch(updateNote({id, title, startHour, endHour, startMinute, endMinute, startDay, startMonth, startYear, endDay, endMonth, endYear}));
             })
             .catch(error => {
                 if (error.name !== 'AbortError') {
