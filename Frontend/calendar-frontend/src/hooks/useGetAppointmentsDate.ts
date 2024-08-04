@@ -43,7 +43,7 @@ export function useGetAppointmentsDate(day: number, month: number, year: number)
             abortController.abort();
         };
         // eslint-disable-next-line
-    }, [day, month, year]);
+    }, [day, month, year, location]);
 
     return null;
 }

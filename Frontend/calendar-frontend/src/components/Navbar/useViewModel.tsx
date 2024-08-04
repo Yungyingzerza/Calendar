@@ -13,11 +13,17 @@ import { API } from "constants/API";
 
 import { getRefreshToken } from "utils/getRefreshToken";
 
+import { useLocation, useNavigate } from "react-router-dom";
+
 export default function useViewModel() {
     const theme = useSelector((state : IThemeSlice) => state.theme.value);
     const {  name, picture, isLogin } = useSelector((state : IUserSlice) => state.user);
     const { authenLoading } = useSelector((state : ILoadingSlice) => state.loading);
     const dispatch = useDispatch();
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    const [page, setPage] = useState(location.pathname)
 
     const startTheme = useState(localStorage.getItem('theme') || 'dark')[0]
 
@@ -29,8 +35,13 @@ export default function useViewModel() {
 
     useEffect(() => {
         themeChange(false)
+
         // eslint-disable-next-line
     }, [])
+
+    useEffect(() => {
+        setPage(location.pathname)
+    }, [location])
 
     const toggleTheme = () => {
         
@@ -89,5 +100,9 @@ export default function useViewModel() {
         flow: 'auth-code',
       });
 
-    return { toggleTheme, logout, googleLogin, handleTodayClick, theme, startTheme, authenLoading, isLogin, name, picture }
+    const handleOptionChange = (e : React.ChangeEvent<HTMLSelectElement>) => {
+        navigate((e.target.value).toLowerCase())
+    }
+
+    return { toggleTheme, logout, googleLogin, handleTodayClick, theme, startTheme, authenLoading, isLogin, name, picture, page, handleOptionChange }
 }
