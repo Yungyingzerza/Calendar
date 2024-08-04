@@ -84,6 +84,24 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
         e.preventDefault();
         const tempStartHour = hour;
         let tempEndHour = endHour;
+
+        const isEndInSameDay = startDay === endDay && startMonth === endMonth && startYear === endYear;
+
+        let tempStartDay : number = startDay;
+        let tempEndDay : number = endDay;
+        let tempStartMonth : number = startMonth;
+        let tempEndMonth : number = endMonth;
+        let tempStartYear : number = startYear;
+        let tempEndYear : number = endYear;
+
+        if(isEndInSameDay){
+            tempStartDay = propDate?.getDate() || 0;
+            tempEndDay = propDate?.getDate() || 0;
+            tempStartMonth = propDate?.getMonth() || 0;
+            tempEndMonth = propDate?.getMonth() || 0;
+            tempStartYear = propDate?.getFullYear() || 0;
+            tempEndYear = propDate?.getFullYear() || 0;
+        }
         
 
         if(startHour > hour){
@@ -103,12 +121,12 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
                 endHour: tempEndHour,
                 startMinute: startMinute,
                 endMinute: endMinute,
-                startDay: startDay,
-                endDay: endDay,
-                startMonth: startMonth,
-                endMonth: endMonth,
-                startYear: startYear,
-                endYear: endYear,
+                startDay: tempStartDay,
+                endDay: tempEndDay,
+                startMonth: tempStartMonth,
+                endMonth: tempEndMonth,
+                startYear: tempStartYear,
+                endYear: tempEndYear,
                 newHeight: tempNewHeight,
                 newTop: newTop
         }});

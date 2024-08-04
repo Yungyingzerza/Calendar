@@ -101,7 +101,7 @@ async function getAppointmentsByWeek(req, res) {
                 const tempDate = new Date(req.query.year, req.query.month, req.query.day);
                 const dayOfWeek = tempDate.getDay();
                 const sunday = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate() - dayOfWeek);
-                const saturday = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate() + (6 - dayOfWeek) );
+                const saturday = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate() + (6 - dayOfWeek), 23, 59, 59);
 
                 const appointments = await Calendar.findAll({
                     where:{

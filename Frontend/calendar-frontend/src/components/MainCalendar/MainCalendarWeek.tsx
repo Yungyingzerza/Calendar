@@ -34,7 +34,7 @@ export default function MainCalendar() {
                 {Array.from({ length: 24 }, (_, index) => (
                     <div key={index} className="flex flex-row gap-1">
                         {/* Show only time */}
-                        <AppointmentListWeek hour={index} showContent={false}/>
+                        <AppointmentListWeek hour={index} showContent={false} propDate={week[0]}/>
 
                         {/* Appointment each day in week */}
 

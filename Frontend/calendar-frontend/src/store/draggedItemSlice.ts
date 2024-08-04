@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { start } from "repl";
 
 const initialState = {
     id: 0,
@@ -7,9 +8,12 @@ const initialState = {
     endHour: 0,
     startMinute: 0,
     endMinute: 0,
-    day: 0,
-    month: 0,
-    year: 0,
+    startDay: 0,
+    endDay: 0,
+    startMonth: 0,
+    endMonth: 0,
+    startYear: 0,
+    endYear: 0,
     newHeight: 0,
     newTop: 0,
 };
@@ -36,14 +40,23 @@ export const draggedItemSlice = createSlice({
         setEndMinute: (state, action) => {
             state.endMinute = action.payload;
         },
-        setDay: (state, action) => {
-            state.day = action.payload;
+        setStartDay: (state, action) => {
+            state.startDay = action.payload;
         },
-        setMonth: (state, action) => {
-            state.month = action.payload;
+        setEndDay: (state, action) => {
+            state.endDay = action.payload;
         },
-        setYear: (state, action) => {
-            state.year = action.payload;
+        setStartMonth: (state, action) => {
+            state.startMonth = action.payload;
+        },
+        setEndMonth: (state, action) => {
+            state.endMonth = action.payload;
+        },
+        setStartYear: (state, action) => {
+            state.startYear = action.payload;
+        },
+        setEndYear: (state, action) => {
+            state.endYear = action.payload;
         },
         setNewHeight: (state, action) => {
             state.newHeight = action.payload;
@@ -54,5 +67,5 @@ export const draggedItemSlice = createSlice({
     },
 });
 
-export const { setId, setTitle, setStartHour, setStartMinute, setEndHour, setEndMinute, setDay, setMonth, setYear, setNewHeight, setNewTop } = draggedItemSlice.actions;
+export const { setId, setTitle, setStartHour, setStartMinute, setEndHour, setEndMinute, setStartDay, setEndDay, setStartMonth, setEndMonth, setStartYear, setEndYear, setNewHeight, setNewTop } = draggedItemSlice.actions;
 export default draggedItemSlice.reducer;

@@ -161,5 +161,5 @@ export default function useViewModel({ hour}: { hour: number}) {
         })
     }
 
-    return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop }
+    return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear }
 }

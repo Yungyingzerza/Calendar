@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop } from "store/draggedItemSlice";
+import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop, setStartDay, setEndDay, setStartMonth, setEndMonth, setStartYear, setEndYear } from "store/draggedItemSlice";
 import { INoteData } from "interfaces/INoteData";
 
 export default function useViewModel({note, newHeight, newTop, opacity = 1} : {note :INoteData, newHeight: number, newTop: number, opacity?: number}) {
@@ -28,6 +28,12 @@ export default function useViewModel({note, newHeight, newTop, opacity = 1} : {n
         dispatch(setEndMinute(note.endMinute));
         dispatch(setNewHeight(newHeight));
         dispatch(setNewTop(newTop));
+        dispatch(setStartDay(note.startDay));
+        dispatch(setEndDay(note.endDay));
+        dispatch(setStartMonth(note.startMonth));
+        dispatch(setEndMonth(note.endMonth));
+        dispatch(setStartYear(note.startYear));
+        dispatch(setEndYear(note.endYear));
     }
 
 

@@ -27,12 +27,25 @@ export default function AppointmentListWeek({ hour, displayTime = true, showCont
 
                 {/* Apoointment that longer than 1 day */}
                 {(hour === 0) && 
-                    <div className="flex flex-col gap-2 w-full">
-                        {dayOfWeek !== -1 ? <div className="h-4 w-[calc(100%+1rem)] relative bg-red-500 self-center rounded-md"></div> : <div className="h-4 w-[calc(100%+1.5rem)] relative bg-transparent self-center rounded-md"></div>}
-                        {dayOfWeek !== -1 ? <div className="h-4 w-[calc(100%+1rem)] relative bg-red-500 self-center rounded-md"></div> : <div className="h-4 w-[calc(100%+1.5rem)] relative bg-transparent self-center rounded-md"></div>}
-                        {dayOfWeek !== -1 ? <div className="h-4 w-[calc(100%+1rem)] relative bg-red-500 self-center rounded-md"></div> : <div className="h-4 w-[calc(100%+1.5rem)] relative bg-transparent self-center rounded-md"></div>}
-                        {dayOfWeek !== -1 ? <div className="h-4 w-[calc(100%+1rem)] relative bg-red-500 self-center rounded-md"></div> : <div className="h-4 w-[calc(100%+1.5rem)] relative bg-transparent self-center rounded-md"></div>}
-                        
+                    <div className="flex flex-col gap-2 w-full text-center">
+
+                        {propDate && noteList.map((note, index) => {
+                            const startDay = new Date(note.startYear, note.startMonth , note.startDay);
+                            const endDay = new Date(note.endYear, note.endMonth, note.endDay);
+                            const thisDay = new Date(propDate.getFullYear(), propDate.getMonth(), propDate.getDate());
+                            const diffTime = Math.abs(endDay.getTime() - startDay.getTime());
+
+                            const isDateInWeek = (startDay <= thisDay && endDay >= thisDay);
+
+                            if (diffTime > 86400000 && isDateInWeek && dayOfWeek !== -1) {
+                                return (
+                                    <div key={`${index}-${note.id}-${thisDay.getTime}`} className=" h-6 w-[calc(100%+1rem)] relative self-center rounded-md bg-secondary text-secondary-content">{note.title}</div>
+                                )
+                            }else if(diffTime > 86400000){
+                                return <div key={`${index}-${note.id}-${thisDay.getTime}`} className="h-6 w-[calc(100%+1rem)] relative bg-transparent self-center rounded-md"></div>
+                            }
+
+                        })}
                     </div>
                 }
 
