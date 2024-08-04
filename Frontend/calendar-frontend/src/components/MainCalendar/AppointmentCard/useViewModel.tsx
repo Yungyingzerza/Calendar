@@ -36,6 +36,24 @@ export default function useViewModel({note, newHeight, newTop, opacity = 1} : {n
         dispatch(setEndYear(note.endYear));
     }
 
+    const handleOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        dispatch(setId(note.id));
+        dispatch(setTitle(note.title));
+        dispatch(setStartHour(note.startHour));
+        dispatch(setEndHour(note.endHour));
+        dispatch(setStartMinute(note.startMinute));
+        dispatch(setEndMinute(note.endMinute));
+        dispatch(setNewHeight(newHeight));
+        dispatch(setNewTop(newTop));
+        dispatch(setStartDay(note.startDay));
+        dispatch(setEndDay(note.endDay));
+        dispatch(setStartMonth(note.startMonth));
+        dispatch(setEndMonth(note.endMonth));
+        dispatch(setStartYear(note.startYear));
+        dispatch(setEndYear(note.endYear));
+        (document.getElementById('appointmentModal') as any).showModal()
+    }
 
-    return { itemRef, handleDragStart }
+
+    return { itemRef, handleDragStart, handleOnClick }
 }
