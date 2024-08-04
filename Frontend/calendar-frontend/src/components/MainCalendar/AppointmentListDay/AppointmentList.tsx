@@ -21,11 +21,11 @@ export default function AppointmentList({ hour }: { hour: number }) {
                             const isDateInWeek = (startDay <= thisDay && endDay >= thisDay);
                             
 
-                            if (diffTime > 86400000 && isDateInWeek) {
+                            if (diffTime >= 86400000 && isDateInWeek) {
                                 return (
                                     <div key={`${index}-${note.id}-${thisDay.getTime}`} className=" h-6 w-[calc(100%+1rem)] relative self-center rounded-md bg-secondary text-secondary-content">{note.title}</div>
                                 )
-                            }else if(diffTime > 86400000){
+                            }else if(diffTime >= 86400000){
                                 return <div key={`${index}-${note.id}-${thisDay.getTime}`} className="h-6 w-[calc(100%+1rem)] relative bg-transparent self-center rounded-md"></div>
                             }
                         })}
