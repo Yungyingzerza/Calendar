@@ -3,7 +3,7 @@ import AppointmentCard from "../AppointmentCard/AppointmentCard";
 
 export default function AppointmentList({ hour }: { hour: number }) {
 
-    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear, handleOnClick } = useViewModel({ hour });
+    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear, handleOnClick, handleOnMouseDown, handleOnMouseMove, handleOnMouseUp } = useViewModel({ hour });
 
     return (
         <>
@@ -59,6 +59,9 @@ export default function AppointmentList({ hour }: { hour: number }) {
                 onDragOver={e => handleDragOver(e)}
                 onDragLeave={e => handleDragLeave(e)}
                 onDrop={e => handleDrop(e)}
+                onMouseMove={e => handleOnMouseMove(e, hour)}
+                onMouseDown={e => handleOnMouseDown(e, hour, selectedDay, selectedMonth, selectedYear)}
+                onMouseUp={e => handleOnMouseUp(e, hour)}
             >
                 <div className="flex flex-row items-center">
                     <div className="w-2 h-2 rounded-full bg-secondary mr-2"> </div>

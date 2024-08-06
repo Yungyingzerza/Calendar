@@ -3,7 +3,7 @@ import { IDraggedItem } from "interfaces/IDraggedItemSlice";
 import { INoteListSlice } from "interfaces/INoteList";
 import { ICalendarSlice } from "interfaces/ICalendarSlice";
 import { useEffect, useState, useRef } from "react";
-import { addNote, deleteNote } from "store/noteList/action";
+import { addNote, deleteNote, updateNote } from "store/noteList/action";
 import { useUpdateAppointmentsById } from "hooks/useUpdateAppointmentsById";
 import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop, setStartDay, setEndDay, setStartMonth, setEndMonth, setStartYear, setEndYear } from "store/draggedItemSlice";
 
@@ -182,5 +182,126 @@ export default function useViewModel({ hour}: { hour: number}) {
         (document.getElementById('appointmentModal') as any).showModal()
     }
 
-    return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear, handleOnClick }
+    const handleOnMouseDown = (e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number, day : number, month : number, year : number) => {
+        let rect = e.currentTarget.getBoundingClientRect();
+        let y = e.clientY - rect.top;
+        const convertYToMinute = Math.ceil(y / 4);
+
+
+        dispatch(addNote({
+            id: "preview",
+            title: "preview",
+            startHour: hour,
+            endHour: hour,
+            startMinute: convertYToMinute,
+            endMinute: convertYToMinute,
+            startDay: day,
+            endDay: day,
+            startMonth: month,
+            endMonth: month,
+            startYear: year,
+            endYear: year,
+            newHeight: 0,
+            newTop: 0,
+            constHour: hour,
+            constMinute: convertYToMinute
+        }));
+        
+    }
+
+    const handleOnMouseMove = (e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number) => {
+        if(e.buttons !== 1) return;
+        let rect = e.currentTarget.getBoundingClientRect();
+        let y = e.clientY - rect.top;
+        let convertYToMinute = Math.ceil(y / 4);
+        let tempHour = hour;
+        let tempMinuteDraggingTop = Math.ceil(y / 4);
+
+        //dragging down
+        if(convertYToMinute >= 60){
+            tempHour += Math.floor(convertYToMinute / 60);
+            convertYToMinute = convertYToMinute % 60;
+        }
+
+
+        const index = noteList.findIndex((note) => note.id === "preview");
+        if(index === -1) return;
+        if(convertYToMinute === noteList[index].endMinute || tempMinuteDraggingTop === noteList[index].startMinute) return;
+
+        let isGoDown = true;
+
+        const constDate = new Date(noteList[index].startYear, noteList[index].startMonth, noteList[index].startDay, noteList[index].constHour, noteList[index].constMinute);
+        const tempDate = new Date(noteList[index].startYear, noteList[index].startMonth, noteList[index].startDay, tempHour, convertYToMinute);
+
+        if(tempDate.getTime() > constDate.getTime()){
+            isGoDown = true;
+        }else{
+            isGoDown = false;
+        }
+
+
+        if(y > 0 && isGoDown){
+            const tempHeight = (hour - noteList[index].startHour) * 240 + (hour - noteList[index].startHour) * 40 - (noteList[index].startMinute * 4) + (convertYToMinute * 4);
+            const tempTop = noteList[index].startMinute * 4;
+
+            dispatch(updateNote({
+                id: "preview",
+                title: "preview",
+                startHour: noteList[index].startHour,
+                endHour: tempHour,
+                startMinute: noteList[index].startMinute,
+                endMinute: convertYToMinute,
+                startDay: noteList[index].startDay,
+                endDay: noteList[index].endDay,
+                startMonth: noteList[index].startMonth,
+                endMonth: noteList[index].endMonth,
+                startYear: noteList[index].startYear,
+                endYear: noteList[index].endYear,
+                newHeight: tempHeight,
+                newTop: tempTop,
+            }));
+        }else if(y > 0 && !isGoDown){
+            const tempHeight = (hour - noteList[index].startHour) * 240 + (hour - noteList[index].startHour) * 40 - (noteList[index].startMinute * 4) + (tempMinuteDraggingTop * 4);
+            const tempTop = noteList[index].startMinute * 4;
+
+            let addHour = 0;
+            if(tempMinuteDraggingTop >= 60){
+                addHour = Math.floor(tempMinuteDraggingTop / 60);
+                tempMinuteDraggingTop = tempMinuteDraggingTop % 60;
+            }
+
+            dispatch(updateNote({
+                id: "preview",
+                title: "preview",
+                startHour: hour + addHour,
+                endHour: noteList[index]?.constHour,
+                startMinute: tempMinuteDraggingTop,
+                endMinute: noteList[index]?.constMinute,
+                startDay: noteList[index].startDay,
+                endDay: noteList[index].endDay,
+                startMonth: noteList[index].startMonth,
+                endMonth: noteList[index].endMonth,
+                startYear: noteList[index].startYear,
+                endYear: noteList[index].endYear,
+                newHeight: tempHeight,
+                newTop: tempTop,
+            }));
+
+        }
+
+    }
+
+    const handleOnMouseUp = (e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number) => {
+        let rect = e.currentTarget.getBoundingClientRect();
+        let y = e.clientY - rect.top;
+        const convertYToMinute = Math.ceil(y / 4);
+
+        const index = noteList.findIndex((note) => note.id === "preview");
+        if(index === -1) return;
+
+        dispatch(deleteNote({id: "preview"}));
+
+    }
+
+    return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear, handleOnClick, handleOnMouseDown, handleOnMouseMove, handleOnMouseUp }
 }

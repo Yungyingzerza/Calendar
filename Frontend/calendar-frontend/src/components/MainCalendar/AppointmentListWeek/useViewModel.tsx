@@ -276,7 +276,6 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
                 endYear: noteList[index].endYear,
                 newHeight: tempHeight,
                 newTop: tempTop,
-                isDraggingDown: true
             }));
         }else if(y > 0 && !isGoDown){
             const tempHeight = (hour - noteList[index].startHour) * 240 + (hour - noteList[index].startHour) * 40 - (noteList[index].startMinute * 4) + (tempMinuteDraggingTop * 4);
@@ -303,12 +302,9 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
                 endYear: noteList[index].endYear,
                 newHeight: tempHeight,
                 newTop: tempTop,
-                isDraggingDown: false
             }));
 
         }
-
-
 
     }
 
@@ -321,8 +317,6 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
         if(index === -1) return;
 
         dispatch(deleteNote({id: "preview"}));
-        
-
 
     }
 
