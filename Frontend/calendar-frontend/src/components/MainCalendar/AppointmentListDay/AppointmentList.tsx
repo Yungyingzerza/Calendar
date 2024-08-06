@@ -3,7 +3,7 @@ import AppointmentCard from "../AppointmentCard/AppointmentCard";
 
 export default function AppointmentList({ hour }: { hour: number }) {
 
-    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear } = useViewModel({ hour });
+    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear, handleOnClick } = useViewModel({ hour });
 
     return (
         <>
@@ -20,10 +20,31 @@ export default function AppointmentList({ hour }: { hour: number }) {
                             
                             const isDateInWeek = (startDay <= thisDay && endDay >= thisDay);
                             
+                            let newHeight = (note.endHour - note.startHour) * 240 + (note.endHour - note.startHour) * 40 - (note.startMinute * 4) + (note.endMinute * 4);
+                            let newTop = note.startMinute * 4;
+
+                            const dataOnClick = {
+                                draggedItem: {
+                                    id: note.id,
+                                    title: note.title,
+                                    startHour: note.startHour,
+                                    endHour: note.endHour,
+                                    startMinute: note.startMinute,
+                                    endMinute: note.endMinute,
+                                    startDay: note.startDay,
+                                    endDay: note.endDay,
+                                    startMonth: note.startMonth,
+                                    endMonth: note.endMonth,
+                                    startYear: note.startYear,
+                                    endYear: note.endYear,
+                                    newTop: newTop,
+                                    newHeight: newHeight
+                                }
+                            }
 
                             if (diffTime >= 86400000 && isDateInWeek) {
                                 return (
-                                    <div key={`${index}-${note.id}-${thisDay.getTime}`} className=" h-6 w-[calc(100%+1rem)] relative self-center rounded-md bg-secondary text-secondary-content">{note.title}</div>
+                                    <div key={`${index}-${note.id}-${thisDay.getTime}`} onClick={e => handleOnClick(dataOnClick)} className=" cursor-pointer h-6 w-[calc(100%+1rem)] relative self-center rounded-md bg-secondary text-secondary-content">{note.title}</div>
                                 )
                             }else if(diffTime >= 86400000){
                                 return <div key={`${index}-${note.id}-${thisDay.getTime}`} className="h-6 w-[calc(100%+1rem)] relative bg-transparent self-center rounded-md"></div>

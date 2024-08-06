@@ -5,6 +5,8 @@ import { ICalendarSlice } from "interfaces/ICalendarSlice";
 import { useEffect, useState, useRef } from "react";
 import { addNote, deleteNote } from "store/noteList/action";
 import { useUpdateAppointmentsById } from "hooks/useUpdateAppointmentsById";
+import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop, setStartDay, setEndDay, setStartMonth, setEndMonth, setStartYear, setEndYear } from "store/draggedItemSlice";
+
 
 export default function useViewModel({ hour}: { hour: number}) {
     const { newTop, id, endHour, endMinute, startHour, startMinute, title, startDay, startMonth, startYear, endDay, endMonth, endYear } = useSelector((state: IDraggedItem) => state.draggedItem);
@@ -161,5 +163,24 @@ export default function useViewModel({ hour}: { hour: number}) {
         })
     }
 
-    return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear }
+    const handleOnClick = ({draggedItem} : IDraggedItem) => {
+        const note = draggedItem;
+        dispatch(setId(note.id));
+        dispatch(setTitle(note.title));
+        dispatch(setStartHour(note.startHour));
+        dispatch(setEndHour(note.endHour));
+        dispatch(setStartMinute(note.startMinute));
+        dispatch(setEndMinute(note.endMinute));
+        dispatch(setNewHeight(note.newHeight));
+        dispatch(setNewTop(note.newTop));
+        dispatch(setStartDay(note.startDay));
+        dispatch(setEndDay(note.endDay));
+        dispatch(setStartMonth(note.startMonth));
+        dispatch(setEndMonth(note.endMonth));
+        dispatch(setStartYear(note.startYear));
+        dispatch(setEndYear(note.endYear));
+        (document.getElementById('appointmentModal') as any).showModal()
+    }
+
+    return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear, handleOnClick }
 }

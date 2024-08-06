@@ -4,7 +4,7 @@ import { getDayName } from "utils/getDayName";
 
 export default function AppointmentListWeek({ hour, displayTime = true, showContent = true, dayOfWeek = -1, propDate }: { hour: number, displayTime?: boolean, showContent?: boolean, dayOfWeek?: number, propDate?: Date }) {
 
-    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop } = useViewModel({ hour, propDate });
+    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, handleOnClick } = useViewModel({ hour, propDate });
 
     return (
         <>
@@ -26,22 +26,44 @@ export default function AppointmentListWeek({ hour, displayTime = true, showCont
                 }
 
                 {/* Apoointment that longer than 1 day */}
-                {(hour === 0) && 
+                {(hour === 0) &&
                     <div className="flex flex-col gap-2 w-full text-center">
 
                         {propDate && noteList.map((note, index) => {
-                            const startDay = new Date(note.startYear, note.startMonth , note.startDay);
+                            const startDay = new Date(note.startYear, note.startMonth, note.startDay);
                             const endDay = new Date(note.endYear, note.endMonth, note.endDay);
                             const thisDay = new Date(propDate.getFullYear(), propDate.getMonth(), propDate.getDate());
                             const diffTime = Math.abs(endDay.getTime() - startDay.getTime());
 
                             const isDateInWeek = (startDay <= thisDay && endDay >= thisDay);
 
+                            let newHeight = (note.endHour - note.startHour) * 240 + (note.endHour - note.startHour) * 40 - (note.startMinute * 4) + (note.endMinute * 4);
+                            let newTop = note.startMinute * 4;
+
+                            const dataOnClick = {
+                                draggedItem: {
+                                    id: note.id,
+                                    title: note.title,
+                                    startHour: note.startHour,
+                                    endHour: note.endHour,
+                                    startMinute: note.startMinute,
+                                    endMinute: note.endMinute,
+                                    startDay: note.startDay,
+                                    endDay: note.endDay,
+                                    startMonth: note.startMonth,
+                                    endMonth: note.endMonth,
+                                    startYear: note.startYear,
+                                    endYear: note.endYear,
+                                    newTop: newTop,
+                                    newHeight: newHeight
+                                }
+                            }
+
                             if (diffTime >= 86400000 && isDateInWeek && dayOfWeek !== -1) {
                                 return (
-                                    <div key={`${index}-${note.id}-${thisDay.getTime}`} className=" h-6 w-[calc(100%+1rem)] relative self-center rounded-md bg-secondary text-secondary-content">{note.title}</div>
+                                    <div key={`${index}-${note.id}-${thisDay.getTime}`} onClick={e => handleOnClick(dataOnClick)} className=" h-6 w-[calc(100%+1rem)] relative self-center rounded-md bg-secondary text-secondary-content cursor-pointer">{note.title}</div>
                                 )
-                            }else if(diffTime >= 86400000){
+                            } else if (diffTime >= 86400000) {
                                 return <div key={`${index}-${note.id}-${thisDay.getTime}`} className="h-6 w-[calc(100%+1rem)] relative bg-transparent self-center rounded-md"></div>
                             }
 
@@ -78,9 +100,9 @@ export default function AppointmentListWeek({ hour, displayTime = true, showCont
                         <div className="flex flex-col relative w-full min-w-20 md:min-w-0 lg:min-w-0">
                             {/* note list */}
                             {noteList.map((note, index) => {
-                                
 
-                                if (note.startHour === hour && note.startDay === note.endDay && note.startMonth === note.endMonth && note.startYear === note.endYear && note.startDay === propDate?.getDate())  {
+
+                                if (note.startHour === hour && note.startDay === note.endDay && note.startMonth === note.endMonth && note.startYear === note.endYear && note.startDay === propDate?.getDate()) {
                                     let newHeight = (note.endHour - note.startHour) * 240 + (note.endHour - note.startHour) * 40 - (note.startMinute * 4) + (note.endMinute * 4);
                                     let newTop = note.startMinute * 4;
                                     return (
