@@ -14,6 +14,10 @@ calendarRouter.get('/appointment/week', async (req, res) => {
     return await calendarService.getAppointmentsByWeek(req, res);
 });
 
+calendarRouter.post('/appointment/', async (req, res) => {
+    return await calendarService.createAppointment(req, res);
+});
+
 
 
 

@@ -292,15 +292,30 @@ export default function useViewModel({ hour}: { hour: number}) {
     }
 
     const handleOnMouseUp = (e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number) => {
-        let rect = e.currentTarget.getBoundingClientRect();
-        let y = e.clientY - rect.top;
-        const convertYToMinute = Math.ceil(y / 4);
 
-        const index = noteList.findIndex((note) => note.id === "preview");
-        if(index === -1) return;
+        const note = noteList.find((note) => note.id === "preview");
 
-        dispatch(deleteNote({id: "preview"}));
+        if(!note) return;
 
+        const tempHeight = (hour - note.startHour) * 240 + (hour - note.startHour) * 40 - (note.startMinute * 4) + (note.endMinute * 4);
+        const tempTop = note.startMinute * 4;
+
+        dispatch(setId(note.id));
+        dispatch(setTitle(note.title));
+        dispatch(setStartHour(note.startHour));
+        dispatch(setEndHour(note.endHour));
+        dispatch(setStartMinute(note.startMinute));
+        dispatch(setEndMinute(note.endMinute));
+        dispatch(setNewHeight(tempHeight));
+        dispatch(setNewTop(tempTop));
+        dispatch(setStartDay(note.startDay));
+        dispatch(setEndDay(note.endDay));
+        dispatch(setStartMonth(note.startMonth));
+        dispatch(setEndMonth(note.endMonth));
+        dispatch(setStartYear(note.startYear));
+        dispatch(setEndYear(note.endYear));
+
+        (document.getElementById('createAppointmentModal') as any).showModal();
     }
 
     return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear, handleOnClick, handleOnMouseDown, handleOnMouseMove, handleOnMouseUp }

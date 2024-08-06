@@ -4,6 +4,7 @@ import Navbar from "components/Navbar/Navbar";
 import MainCalendarDay from "components/MainCalendar/MainCalendarDay";
 import MainCalendarWeek from "components/MainCalendar/MainCalendarWeek";
 import AppointmentModal from "components/AppointmentModal/AppointmentModal";
+import CreateAppointmentModal from "components/CreateAppointmentModal/CreateAppointmentModal";
 import {
   Routes,
   Route,
@@ -18,6 +19,7 @@ function App() {
       <div className="relative h-full w-full bg-base-100" >
         <div className={`absolute inset-0 bg-pink-400 bg-[size:20px_20px] ${theme === 'dark' ? 'opacity-15' : 'opacity-50'} blur-[350px] z-10`}> </div>
         <AppointmentModal />
+        <CreateAppointmentModal />
         <div className="flex flex-col min-[900px]:flex-row flex-wrap relative z-20">
           {/* Mobile */}
           <div className="w-full min-[900px]:hidden block">
