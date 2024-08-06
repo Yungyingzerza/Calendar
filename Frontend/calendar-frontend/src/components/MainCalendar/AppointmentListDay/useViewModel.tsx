@@ -6,13 +6,14 @@ import { useEffect, useState, useRef } from "react";
 import { addNote, deleteNote, updateNote } from "store/noteList/action";
 import { useUpdateAppointmentsById } from "hooks/useUpdateAppointmentsById";
 import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop, setStartDay, setEndDay, setStartMonth, setEndMonth, setStartYear, setEndYear } from "store/draggedItemSlice";
+import { setIsClick } from "store/isClickOnAppointmentSlice";
 
 
 export default function useViewModel({ hour}: { hour: number}) {
     const { newTop, id, endHour, endMinute, startHour, startMinute, title, startDay, startMonth, startYear, endDay, endMonth, endYear } = useSelector((state: IDraggedItem) => state.draggedItem);
     const {selectedDay, selectedMonth, selectedYear} = useSelector((state: ICalendarSlice) => state.calendar);
     const noteList = useSelector((state: INoteListSlice) => state.noteList);
-
+    const {click} = useSelector((state: any) => state.isClickOnAppointment);
 
     const [tempDraggedItem, setTempDraggedItem] = useState<IDraggedItem>({
         draggedItem: {
@@ -84,6 +85,13 @@ export default function useViewModel({ hour}: { hour: number}) {
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
+
+        if(click){
+            const note = noteList.find((note) => note.id === "preview");
+
+            dispatch(deleteNote({id: "preview"}));
+        }
+
         const tempStartHour = hour;
         let tempEndHour = endHour;
         
@@ -118,6 +126,7 @@ export default function useViewModel({ hour}: { hour: number}) {
 
     const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
+        
         setTempDraggedItem({
             draggedItem: {
                 id: "-1",
@@ -143,6 +152,7 @@ export default function useViewModel({ hour}: { hour: number}) {
         updateAppointments();
         dispatch(deleteNote({id: tempDraggedItem.draggedItem.id}));
         dispatch(addNote({...tempDraggedItem.draggedItem}));
+        dispatch(setIsClick(false));
         setTempDraggedItem({
             draggedItem: {
                 id: "-1",
@@ -183,6 +193,8 @@ export default function useViewModel({ hour}: { hour: number}) {
     }
 
     const handleOnMouseDown = (e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number, day : number, month : number, year : number) => {
+        if(click) return;
+        
         let rect = e.currentTarget.getBoundingClientRect();
         let y = e.clientY - rect.top;
         const convertYToMinute = Math.ceil(y / 4);
@@ -210,6 +222,7 @@ export default function useViewModel({ hour}: { hour: number}) {
     }
 
     const handleOnMouseMove = (e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number) => {
+        if(click) return;
         if(e.buttons !== 1) return;
         let rect = e.currentTarget.getBoundingClientRect();
         let y = e.clientY - rect.top;
@@ -292,7 +305,14 @@ export default function useViewModel({ hour}: { hour: number}) {
     }
 
     const handleOnMouseUp = (e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number) => {
+        if(click){
+            const note = noteList.find((note) => note.id === "preview");
+            if(!note) return;
 
+            dispatch(deleteNote({id: "preview"}));
+
+            return
+        }
         const note = noteList.find((note) => note.id === "preview");
 
         if(!note) return;

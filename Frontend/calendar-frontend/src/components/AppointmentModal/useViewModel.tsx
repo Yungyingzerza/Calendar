@@ -1,6 +1,7 @@
 import { useUpdateAppointmentsById } from "hooks/useUpdateAppointmentsById"
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
+import { setIsClick } from "store/isClickOnAppointmentSlice"
 
 export default function useViewModel() {
     const { id, title, startDay, endDay, startMonth, endMonth, startYear, endYear, startHour, endHour, startMinute, endMinute } = useSelector((state: any) => state.draggedItem)
@@ -19,6 +20,8 @@ export default function useViewModel() {
     const [startTimeError, setStartTimeError] = useState(false)
 
     const { updateAppointments } = useUpdateAppointmentsById({id, title: newTitle, startHour: newStartHour, endHour: newEndHour, startMinute: newStartMinute, endMinute: newEndMinute, startDay: newStartDay, startMonth: newStartMonth, startYear: newStartYear, endDay: newEndDay, endMonth: newEndMonth, endYear: newEndYear});
+
+    const dispatch = useDispatch();
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewTitle(e.target.value)
@@ -59,6 +62,12 @@ export default function useViewModel() {
         }
 
         updateAppointments();
+        dispatch(setIsClick(false));
+        (document.getElementById("appointmentModal") as any).close();
+    }
+
+    const handleCloseModal = () => {
+        dispatch(setIsClick(false));
         (document.getElementById("appointmentModal") as any).close();
     }
 
@@ -118,6 +127,7 @@ export default function useViewModel() {
         newEndMinute,
         startDateError,
         startTimeError,
-        startDay
+        startDay,
+        handleCloseModal
     }
 }

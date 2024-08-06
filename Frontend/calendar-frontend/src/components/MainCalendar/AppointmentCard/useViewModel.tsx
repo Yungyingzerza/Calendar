@@ -1,11 +1,15 @@
 import React, { useRef, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteNote } from "store/noteList/action";
 import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop, setStartDay, setEndDay, setStartMonth, setEndMonth, setStartYear, setEndYear } from "store/draggedItemSlice";
+import { setIsClick } from "store/isClickOnAppointmentSlice";
 import { INoteData } from "interfaces/INoteData";
 
 export default function useViewModel({note, newHeight, newTop, opacity = 1} : {note :INoteData, newHeight: number, newTop: number, opacity?: number}) {
     const itemRef = useRef<HTMLDivElement>(null);
     const dispatch = useDispatch();
+
+    const noteList = useSelector((state: any) => state.noteList);
     
     useEffect(() => {
         if (itemRef.current) {
@@ -20,6 +24,8 @@ export default function useViewModel({note, newHeight, newTop, opacity = 1} : {n
     // 4px = 1 min
 
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+        dispatch(setIsClick(true));
+
         dispatch(setId(note.id));
         dispatch(setTitle(note.title));
         dispatch(setStartHour(note.startHour));
@@ -37,6 +43,8 @@ export default function useViewModel({note, newHeight, newTop, opacity = 1} : {n
     }
 
     const handleOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        dispatch(setIsClick(true));
+
         dispatch(setId(note.id));
         dispatch(setTitle(note.title));
         dispatch(setStartHour(note.startHour));
@@ -51,9 +59,14 @@ export default function useViewModel({note, newHeight, newTop, opacity = 1} : {n
         dispatch(setEndMonth(note.endMonth));
         dispatch(setStartYear(note.startYear));
         dispatch(setEndYear(note.endYear));
+        dispatch(setIsClick(true));
         (document.getElementById('appointmentModal') as any).showModal()
     }
 
+    const handleMouseDown = () => {
+        dispatch(setIsClick(true));
+    }
 
-    return { itemRef, handleDragStart, handleOnClick }
+
+    return { itemRef, handleDragStart, handleOnClick, handleMouseDown }
 }

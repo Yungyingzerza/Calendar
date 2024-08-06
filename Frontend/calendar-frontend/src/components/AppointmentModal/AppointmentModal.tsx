@@ -2,7 +2,7 @@ import useViewModel from "./useViewModel"
 
 export default function AppointmentModal() {
 
-    const { newTitle, newStartDay, newEndDay, newStartMonth, newEndMonth, newStartYear, newEndYear, newStartHour, newEndHour, newStartMinute, newEndMinute, startDateError, startTimeError, startDay, handleTitleChange, handleStartDateChange, handleEndDateChange, handleStartTimeChange, handleEndTimeChange, handleSave } = useViewModel()
+    const { newTitle, newStartDay, newEndDay, newStartMonth, newEndMonth, newStartYear, newEndYear, newStartHour, newEndHour, newStartMinute, newEndMinute, startDateError, startTimeError, startDay, handleTitleChange, handleStartDateChange, handleEndDateChange, handleStartTimeChange, handleEndTimeChange, handleSave, handleCloseModal } = useViewModel()
 
     return (
         <>
@@ -10,7 +10,7 @@ export default function AppointmentModal() {
                 <div className="modal-box bg-opacity-50 backdrop-blur-md shadow-lg relative overflow-hidden">
                 <form method="dialog">
                     {/* if there is a button in form, it will close the modal */}
-                    <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-50">✕</button>
+                    <button onClick={e => handleCloseModal()} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-50">✕</button>
                 </form>
                 <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-violet-600 blur opacity-5"></div>
                     <div className="relative">

@@ -55,7 +55,7 @@ export default function AppointmentList({ hour }: { hour: number }) {
 
 
             </div>
-            <div className="flex flex-row items-start w-full p-2 h-[240px] gap-6"
+            <div className="flex flex-row items-start w-full p-2 h-[240px] gap-6 relative z-0"
                 onDragOver={e => handleDragOver(e)}
                 onDragLeave={e => handleDragLeave(e)}
                 onDrop={e => handleDrop(e)}

@@ -64,10 +64,6 @@ export function useCreateAppointment(dataToUpdate: INoteData) {
                 }
 
             })
-            .finally(() => {
-                dispatch(deleteNote({id: "preview"}));
-                (document.getElementById('createAppointmentModal') as any).close();
-            });
         };
 
 

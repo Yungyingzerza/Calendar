@@ -62,12 +62,14 @@ export default function useViewModel() {
         }
 
         createAppointment();
-        (document.getElementById("appointmentModal") as any).close();
+        (document.getElementById("createAppointmentModal") as any).close();
+        dispatch(deleteNote({id: "preview"}));
     }
 
     const handleCloseModal = () => {
         dispatch(deleteNote({id}));
-        (document.getElementById("appointmentModal") as any).close();
+        (document.getElementById("createAppointmentModal") as any).close();
+        dispatch(deleteNote({id: "preview"}));
     }
 
     useEffect(() => {

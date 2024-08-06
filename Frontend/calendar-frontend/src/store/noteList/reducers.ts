@@ -26,6 +26,11 @@ export default createReducer([], (builder: ActionReducerMapBuilder<any[]>) => {
         const noteIndex = state.findIndex(
             (note) => note.id === action.payload.id
         );
+
+        if (noteIndex === -1) {
+            return;
+        }
+
         state.splice(noteIndex, 1);
     });
 });
