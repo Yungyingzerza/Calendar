@@ -4,7 +4,7 @@ import { getDayName } from "utils/getDayName";
 
 export default function AppointmentListWeek({ hour, displayTime = true, showContent = true, dayOfWeek = -1, propDate }: { hour: number, displayTime?: boolean, showContent?: boolean, dayOfWeek?: number, propDate?: Date }) {
 
-    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, handleOnClick } = useViewModel({ hour, propDate });
+    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, handleOnClick, handleOnMouseDown, handleOnMouseMove, handleOnMouseUp } = useViewModel({ hour, propDate });
 
     return (
         <>
@@ -71,11 +71,16 @@ export default function AppointmentListWeek({ hour, displayTime = true, showCont
                     </div>
                 }
 
-                <div className="flex flex-row items-start justify-center w-full p-2 h-[240px] gap-6"
+                {
+                    propDate &&
+                    <div className="flex flex-row items-start justify-center w-full p-2 h-[240px] gap-6"
                     onDragOver={e => handleDragOver(e)}
                     onDragLeave={e => handleDragLeave(e)}
                     onDrop={e => handleDrop(e)}
-                >
+                    onMouseMove={e => handleOnMouseMove(e, hour)}
+                    onMouseDown={e => handleOnMouseDown(e, hour, propDate.getDate(), propDate.getMonth(), propDate.getFullYear())}
+                    onMouseUp={e => handleOnMouseUp(e, hour)}
+                    >
 
 
 
@@ -129,6 +134,7 @@ export default function AppointmentListWeek({ hour, displayTime = true, showCont
                     }
 
                 </div>
+                }
             </div>
 
 

@@ -11,4 +11,6 @@ export interface INoteData {
     endMonth: number;
     startYear: number;
     endYear: number;
+    constHour?: number,
+    constMinute?: number,
 }

@@ -18,7 +18,9 @@ export default createReducer([], (builder: ActionReducerMapBuilder<any[]>) => {
         const noteIndex = state.findIndex(
             (note) => note.id === action.payload.id
         );
-        state[noteIndex] = action.payload;
+        // state[noteIndex] = action.payload;
+        //edit to use existing object
+        state[noteIndex] = { ...state[noteIndex], ...action.payload };
     });
     builder.addCase(deleteNote, (state, action: PayloadAction<any>) => {
         const noteIndex = state.findIndex(
