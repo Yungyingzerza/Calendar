@@ -3,7 +3,7 @@ import Sidebar from "components/Sidebar/Sidebar";
 import Navbar from "components/Navbar/Navbar";
 import MainCalendarDay from "components/MainCalendar/MainCalendarDay";
 import MainCalendarWeek from "components/MainCalendar/MainCalendarWeek";
-import AppointmentModal from "components/AppointmentModal";
+import AppointmentModal from "components/AppointmentModal/AppointmentModal";
 import {
   Routes,
   Route,
