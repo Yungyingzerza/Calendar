@@ -1,6 +1,6 @@
 import { API } from "constants/API";
 
-export function getRefreshToken(abort : AbortController) {
+export function getRefreshToken(abort : AbortController, callback? : () => void) {
     return fetch(`${API.auth}/refreshToken`, {
         credentials: 'include',
         signal: abort.signal
@@ -14,6 +14,7 @@ export function getRefreshToken(abort : AbortController) {
         })
         .then(data => {
           if (data) {
+            if(callback) callback()
             return data.access_token
           }
         })

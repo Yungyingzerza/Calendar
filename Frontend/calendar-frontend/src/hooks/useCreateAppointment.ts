@@ -1,9 +1,8 @@
 import { API } from "constants/API";
-import { addNote, deleteNote, fetchNotes, updateNote } from 'store/noteList/action';
+import { addNote } from 'store/noteList/action';
 import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import getAppointmentsMapper from "utils/getAppointmentsMapper";
 import { INoteData } from "interfaces/INoteData";
+import { getRefreshToken } from "utils/getRefreshToken";
 
 export function useCreateAppointment(dataToUpdate: INoteData) {
     const { id, title, startHour, endHour, startMinute, endMinute, startDay, startMonth, startYear, endDay, endMonth, endYear } = dataToUpdate;
@@ -60,7 +59,8 @@ export function useCreateAppointment(dataToUpdate: INoteData) {
             })
             .catch(error => {
                 if (error.name !== 'AbortError') {
-                    console.error('Update error:', error);
+                    const abortController = new AbortController();
+                    getRefreshToken(abortController, createAppointment);
                 }
 
             })

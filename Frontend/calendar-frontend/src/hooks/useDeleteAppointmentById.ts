@@ -1,6 +1,7 @@
 import { API } from "constants/API";
 import { deleteNote } from 'store/noteList/action';
 import { useDispatch } from 'react-redux';
+import { getRefreshToken } from "utils/getRefreshToken";
 
 export function useDeleteAppointmentById(id: string) {
     const dispatch = useDispatch();
@@ -21,7 +22,8 @@ export function useDeleteAppointmentById(id: string) {
             })
             .catch(error => {
                 if (error.name !== 'AbortError') {
-                    console.error('Update error:', error);
+                    const abortController = new AbortController();
+                    getRefreshToken(abortController, deleteAppintment);
                 }
             });
         };

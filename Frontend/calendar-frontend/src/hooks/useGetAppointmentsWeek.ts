@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import getAppointmentsMapper from "utils/getAppointmentsMapper";
+import { getRefreshToken } from "utils/getRefreshToken";
 
 export function useGetAppointmentsWeek(day: number, month: number, year: number) {
     const dispatch = useDispatch();
@@ -33,7 +34,8 @@ export function useGetAppointmentsWeek(day: number, month: number, year: number)
             })
             .catch(error => {
                 if (error.name !== 'AbortError') {
-                    console.error('Fetch error:', error);
+                    const abortController = new AbortController();
+                    getRefreshToken(abortController, fetchAppointments);
                 }
             });
         };
