@@ -4,7 +4,7 @@ import { getDayName } from "utils/getDayName";
 
 export default function AppointmentListWeek({ hour, displayTime = true, showContent = true, dayOfWeek = -1, propDate }: { hour: number, displayTime?: boolean, showContent?: boolean, dayOfWeek?: number, propDate?: Date }) {
 
-    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, handleOnClick, handleOnMouseDown, handleOnMouseMove, handleOnMouseUp } = useViewModel({ hour, propDate });
+    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, handleOnClick, handleOnMouseDown, handleOnMouseMove, handleOnMouseUp, handleOnContextMenu } = useViewModel({ hour, propDate });
 
     return (
         <>
@@ -61,7 +61,7 @@ export default function AppointmentListWeek({ hour, displayTime = true, showCont
 
                             if (diffTime >= 86400000 && isDateInWeek && dayOfWeek !== -1) {
                                 return (
-                                    <div key={`${index}-${note.id}-${thisDay.getTime}`} onClick={e => handleOnClick(dataOnClick)} className=" h-6 w-[calc(100%+1rem)] relative self-center rounded-md bg-secondary text-secondary-content cursor-pointer">{note.title}</div>
+                                    <div key={`${index}-${note.id}-${thisDay.getTime}`} onContextMenuCapture={e => handleOnContextMenu(e, dataOnClick)} onClick={e => handleOnClick(dataOnClick)} className=" h-6 w-[calc(100%+1rem)] relative self-center rounded-md bg-secondary text-secondary-content cursor-pointer">{note.title}</div>
                                 )
                             } else if (diffTime >= 86400000) {
                                 return <div key={`${index}-${note.id}-${thisDay.getTime}`} className="h-6 w-[calc(100%+1rem)] relative bg-transparent self-center rounded-md"></div>

@@ -10,14 +10,17 @@ calendarRouter.patch('/appointment/', async (req, res) => {
     return await calendarService.updateAppointmentsById(req, res);
 });
 
-calendarRouter.get('/appointment/week', async (req, res) => {
-    return await calendarService.getAppointmentsByWeek(req, res);
-});
-
 calendarRouter.post('/appointment/', async (req, res) => {
     return await calendarService.createAppointment(req, res);
 });
 
+calendarRouter.delete('/appointment/', async (req, res) => {
+    return await calendarService.deleteAppointmentById(req, res);
+});
+
+calendarRouter.get('/appointment/week', async (req, res) => {
+    return await calendarService.getAppointmentsByWeek(req, res);
+});
 
 
 

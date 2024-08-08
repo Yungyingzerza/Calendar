@@ -3,7 +3,7 @@ import AppointmentCard from "../AppointmentCard/AppointmentCard";
 
 export default function AppointmentList({ hour }: { hour: number }) {
 
-    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear, handleOnClick, handleOnMouseDown, handleOnMouseMove, handleOnMouseUp } = useViewModel({ hour });
+    const { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear, handleOnClick, handleOnMouseDown, handleOnMouseMove, handleOnMouseUp, handleOnContextMenu } = useViewModel({ hour });
 
     return (
         <>
@@ -44,7 +44,7 @@ export default function AppointmentList({ hour }: { hour: number }) {
 
                             if (diffTime >= 86400000 && isDateInWeek) {
                                 return (
-                                    <div key={`${index}-${note.id}-${thisDay.getTime}`} onClick={e => handleOnClick(dataOnClick)} className=" cursor-pointer h-6 w-[calc(100%+1rem)] relative self-center rounded-md bg-secondary text-secondary-content">{note.title}</div>
+                                    <div key={`${index}-${note.id}-${thisDay.getTime}`} onContextMenu={e=> handleOnContextMenu(e,dataOnClick)} onClick={e => handleOnClick(dataOnClick)} className=" cursor-pointer h-6 w-[calc(100%+1rem)] relative self-center rounded-md bg-secondary text-secondary-content">{note.title}</div>
                                 )
                             }else if(diffTime >= 86400000){
                                 return <div key={`${index}-${note.id}-${thisDay.getTime}`} className="h-6 w-[calc(100%+1rem)] relative bg-transparent self-center rounded-md"></div>

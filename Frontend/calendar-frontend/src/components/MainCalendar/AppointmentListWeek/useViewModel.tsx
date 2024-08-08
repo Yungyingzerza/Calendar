@@ -6,11 +6,13 @@ import { addNote, deleteNote, updateNote } from "store/noteList/action";
 import { useUpdateAppointmentsById } from "hooks/useUpdateAppointmentsById";
 import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop, setStartDay, setEndDay, setStartMonth, setEndMonth, setStartYear, setEndYear } from "store/draggedItemSlice";
 import { setIsClick } from "store/isClickOnAppointmentSlice";
+import { setIsOn, setLeft, setTop } from "store/menuContextSlice";
 
 export default function useViewModel({ hour, propDate }: { hour: number, propDate?: Date }) {
     const { newTop, id, endHour, endMinute, startHour, startMinute, title, startDay, startMonth, startYear, endDay, endMonth, endYear, newHeight} = useSelector((state: IDraggedItem) => state.draggedItem);
     const noteList = useSelector((state: INoteListSlice) => state.noteList);
     const {click} = useSelector((state: any) => state.isClickOnAppointment);
+    const {left, top, offsetWidth, offsetHeight} = useSelector((state: any) => state.menuContext);
     const [date, setDate] = useState<Date>();
 
     const [tempDraggedItem, setTempDraggedItem] = useState<IDraggedItem>({
@@ -214,10 +216,13 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
             const note = noteList.find((note) => note.id === "preview");
             if(!note) return;
 
-            dispatch(deleteNote({id: "preview"}));
+                dispatch(deleteNote({id: "preview"}));
 
             return
         }
+
+        if(e.button !== 0) return;
+
         let rect = e.currentTarget.getBoundingClientRect();
         let y = e.clientY - rect.top;
         const convertYToMinute = Math.ceil(y / 4);
@@ -336,11 +341,6 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
 
     const handleOnMouseUp = (e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number) => {
         if(click){
-            const note = noteList.find((note) => note.id === "preview");
-            if(!note) return;
-
-            dispatch(deleteNote({id: "preview"}));
-
             return
         }
         const note = noteList.find((note) => note.id === "preview");
@@ -368,5 +368,43 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
         (document.getElementById('createAppointmentModal') as any).showModal();
     }
 
-    return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, date, handleOnClick, handleOnMouseDown, handleOnMouseMove, handleOnMouseUp }
+    const handleOnContextMenu = (e: React.MouseEvent<HTMLDivElement>, {draggedItem} : IDraggedItem) => {
+        e.preventDefault();
+        const note = draggedItem;
+        dispatch(setId(note.id));
+        dispatch(setTitle(note.title));
+        dispatch(setStartHour(note.startHour));
+        dispatch(setEndHour(note.endHour));
+        dispatch(setStartMinute(note.startMinute));
+        dispatch(setEndMinute(note.endMinute));
+        dispatch(setNewHeight(newHeight));
+        dispatch(setNewTop(newTop));
+        dispatch(setStartDay(note.startDay));
+        dispatch(setEndDay(note.endDay));
+        dispatch(setStartMonth(note.startMonth));
+        dispatch(setEndMonth(note.endMonth));
+        dispatch(setStartYear(note.startYear));
+        dispatch(setEndYear(note.endYear));
+
+        // Determine position for the menu
+        let posX = e.pageX;
+        let posY = e.pageY;
+
+        // Check if the menu goes beyond the right edge of the window
+        if (posX + offsetWidth > window.innerWidth) {
+            posX = window.innerWidth - offsetWidth;
+        }
+
+        // Check if the menu goes beyond the bottom edge of the window
+        if (posY + offsetHeight > window.innerHeight) {
+            posY = window.innerHeight - offsetHeight;
+        }
+
+        dispatch(setLeft(posX));
+        dispatch(setTop(posY));
+
+        dispatch(setIsOn(true));
+    }
+
+    return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, date, handleOnClick, handleOnMouseDown, handleOnMouseMove, handleOnMouseUp, handleOnContextMenu }
 }

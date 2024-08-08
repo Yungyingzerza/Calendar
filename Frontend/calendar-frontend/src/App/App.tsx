@@ -5,6 +5,8 @@ import MainCalendarDay from "components/MainCalendar/MainCalendarDay";
 import MainCalendarWeek from "components/MainCalendar/MainCalendarWeek";
 import AppointmentModal from "components/AppointmentModal/AppointmentModal";
 import CreateAppointmentModal from "components/CreateAppointmentModal/CreateAppointmentModal";
+import ContextMenu from "components/ContextMenu/ContextMenu";
+import DeleteAppointmentModal from "components/DeleteAppointmentModal/DeleteAppointmentModal";
 import {
   Routes,
   Route,
@@ -20,6 +22,8 @@ function App() {
         <div className={`absolute inset-0 bg-pink-400 bg-[size:20px_20px] ${theme === 'dark' ? 'opacity-15' : 'opacity-50'} blur-[350px] z-10`}> </div>
         <AppointmentModal />
         <CreateAppointmentModal />
+        <ContextMenu />
+        <DeleteAppointmentModal />
         <div className="flex flex-col min-[900px]:flex-row flex-wrap relative z-20">
           {/* Mobile */}
           <div className="w-full min-[900px]:hidden block">
