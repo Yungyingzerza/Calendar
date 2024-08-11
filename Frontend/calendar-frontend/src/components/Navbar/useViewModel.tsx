@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { themeChange } from 'theme-change'
 import { useDispatch, useSelector } from "react-redux";
 import { IThemeSlice } from "interfaces/IThemeSlice";
@@ -27,11 +27,11 @@ export default function useViewModel() {
 
     const startTheme = useState(localStorage.getItem('theme') || 'dark')[0]
 
-    const handleTodayClick = () => {
+    const handleTodayClick = useCallback(() => {
         const today = new Date()
         dispatch(setCurrentDisplayMonth(today.getMonth()))
         dispatch(setCurrentDisplayYear(today.getFullYear()))
-    }
+    }, [dispatch])
 
     useEffect(() => {
         themeChange(false)
@@ -43,7 +43,7 @@ export default function useViewModel() {
         setPage(location.pathname)
     }, [location])
 
-    const toggleTheme = () => {
+    const toggleTheme = useCallback(() => {
         
         if (theme === 'light') {
             localStorage.setItem('theme', 'dark')
@@ -52,9 +52,9 @@ export default function useViewModel() {
             localStorage.setItem('theme', 'light')
             dispatch(setTheme('light'))
         }
-    }
+    }, [dispatch, theme])
 
-    const logout = () => {
+    const logout = useCallback(() => {
 
         fetch(`${API.auth}/logout`, {
             credentials: 'include'
@@ -68,11 +68,9 @@ export default function useViewModel() {
             dispatch(setPicture(null))
             dispatch(setIsLogin(false))
         })
+    }, [dispatch])
 
-        
-    }
-
-    const handleAuth = async (codeRes : CodeResponse) => {
+    const handleAuth = useCallback(async (codeRes : CodeResponse) => {
         fetch(`${API.auth}/verify`, {
             method: 'POST',
             headers: {
@@ -84,14 +82,14 @@ export default function useViewModel() {
             credentials: 'include'
         })
         .then(res => res.json())
-        .then(data => {
+        .then(() => {
             getRefreshToken(new AbortController()).then(token => {
                 if (token) {
                     dispatch(setToken(token))
                 }
             })
         })
-    }
+    }, [dispatch])
 
     const googleLogin = useGoogleLogin({
         onSuccess: async codeResponse => {
@@ -100,9 +98,9 @@ export default function useViewModel() {
         flow: 'auth-code',
       });
 
-    const handleOptionChange = (e : React.ChangeEvent<HTMLSelectElement>) => {
+    const handleOptionChange = useCallback((e : React.ChangeEvent<HTMLSelectElement>) => {
         navigate((e.target.value).toLowerCase())
-    }
+    }, [navigate])
 
     return { toggleTheme, logout, googleLogin, handleTodayClick, theme, startTheme, authenLoading, isLogin, name, picture, page, handleOptionChange }
 }

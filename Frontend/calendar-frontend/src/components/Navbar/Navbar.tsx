@@ -17,7 +17,7 @@ export default function Navbar() {
                             </div>
                         </summary>
                         <ul className="menu dropdown-content bg-base-100 rounded-box z-40 w-52 p-2 shadow">
-                            <li onClick={() => logout()}><a>Logout</a></li>
+                            <li onClick={() => logout()}><span>Logout</span></li>
                         </ul>
                     </details>
                 </div> 
