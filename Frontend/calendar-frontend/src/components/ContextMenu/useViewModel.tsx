@@ -1,6 +1,6 @@
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useCallback } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { setIsOn, setTop, setLeft, setOffsetHeight, setOffsetWidth } from "store/menuContextSlice"
+import { setIsOn, setOffsetHeight, setOffsetWidth } from "store/menuContextSlice"
 import { setIsClick } from "store/isClickOnAppointmentSlice";
 
 export default function useViewModel() {
@@ -9,12 +9,12 @@ export default function useViewModel() {
 
     const {isOn, top, left} = useSelector((state: any) => state.menuContext);
 
-    const handleClose = (e: MouseEvent) => {
+    const handleClose = useCallback((e: MouseEvent) => {
         if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
             dispatch(setIsOn(false));
             dispatch(setIsClick(false));
         }
-    }
+    }, [menuRef, dispatch])
 
     useEffect(() => {
         if (menuRef.current) {
@@ -32,17 +32,17 @@ export default function useViewModel() {
             
         }
 
-    }, [menuRef.current, isOn, top, left])
+    }, [menuRef, isOn, top, left, dispatch, handleClose])
 
-    const handleEdit = () => {
+    const handleEdit = useCallback(() => {
         dispatch(setIsOn(false));
         (document.getElementById('appointmentModal') as any).showModal();
-    }
+    }, [dispatch])
 
-    const handleDelete = () => {
+    const handleDelete = useCallback(() => {
         dispatch(setIsOn(false));
         (document.getElementById('deleteAppointmentModal') as any).showModal();
-    }
+    }, [dispatch])
 
     return {menuRef, handleEdit, handleDelete};
 }
