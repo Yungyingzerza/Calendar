@@ -49,6 +49,8 @@ export default function AppointmentList({ hour }: { hour: number }) {
                             }else if(diffTime >= 86400000){
                                 return <div key={`${index}-${note.id}-${thisDay.getTime}`} className="h-6 w-[calc(100%+1rem)] relative bg-transparent self-center rounded-md"></div>
                             }
+
+                            return null;
                         })}
                     </div>
                 }

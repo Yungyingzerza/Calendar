@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { IDraggedItem } from "interfaces/IDraggedItemSlice";
 import { INoteListSlice } from "interfaces/INoteList";
 import { ICalendarSlice } from "interfaces/ICalendarSlice";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { addNote, deleteNote, updateNote } from "store/noteList/action";
 import { useUpdateAppointmentsById } from "hooks/useUpdateAppointmentsById";
 import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop, setStartDay, setEndDay, setStartMonth, setEndMonth, setStartYear, setEndYear } from "store/draggedItemSlice";
@@ -11,7 +11,7 @@ import { setLeft, setTop, setIsOn } from "store/menuContextSlice";
 
 
 export default function useViewModel({ hour}: { hour: number}) {
-    const { newTop, id, endHour, endMinute, startHour, startMinute, title, startDay, startMonth, startYear, endDay, endMonth, endYear } = useSelector((state: IDraggedItem) => state.draggedItem);
+    const { newTop, id, endHour, endMinute, startHour, startMinute, title, endDay, endMonth, endYear } = useSelector((state: IDraggedItem) => state.draggedItem);
     const {selectedDay, selectedMonth, selectedYear} = useSelector((state: ICalendarSlice) => state.calendar);
     const noteList = useSelector((state: INoteListSlice) => state.noteList);
     const {offsetHeight, offsetWidth} = useSelector((state: any) => state.menuContext);
@@ -85,13 +85,13 @@ export default function useViewModel({ hour}: { hour: number}) {
 
 
 
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
 
         if(click){
             const note = noteList.find((note) => note.id === "preview");
 
-            dispatch(deleteNote({id: "preview"}));
+            if(note) dispatch(deleteNote({id: "preview"}));
         }
 
         const tempStartHour = hour;
@@ -124,9 +124,9 @@ export default function useViewModel({ hour}: { hour: number}) {
                 newHeight: tempNewHeight,
                 newTop: newTop
         }});
-    }
+    }, [hour, endHour, endMinute, startHour, startMinute, title, selectedDay, selectedMonth, selectedYear, endDay, endMonth, endYear, id, newTop, dispatch, noteList, click])
 
-    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         
         setTempDraggedItem({
@@ -147,9 +147,9 @@ export default function useViewModel({ hour}: { hour: number}) {
                 newTop: 0
             }
         })
-    }
+    }, [])
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         updateAppointments();
         dispatch(deleteNote({id: tempDraggedItem.draggedItem.id}));
@@ -173,9 +173,9 @@ export default function useViewModel({ hour}: { hour: number}) {
                 newTop: 0
             }
         })
-    }
+    }, [dispatch, tempDraggedItem, updateAppointments])
 
-    const handleOnClick = ({draggedItem} : IDraggedItem) => {
+    const handleOnClick = useCallback(({draggedItem} : IDraggedItem) => {
         const note = draggedItem;
         dispatch(setId(note.id));
         dispatch(setTitle(note.title));
@@ -192,9 +192,9 @@ export default function useViewModel({ hour}: { hour: number}) {
         dispatch(setStartYear(note.startYear));
         dispatch(setEndYear(note.endYear));
         (document.getElementById('appointmentModal') as any).showModal()
-    }
+    }, [dispatch])
 
-    const handleOnMouseDown = (e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number, day : number, month : number, year : number) => {
+    const handleOnMouseDown = useCallback((e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number, day : number, month : number, year : number) => {
         if(click){
             const note = noteList.find((note) => note.id === "preview");
             if(!note) return;
@@ -231,9 +231,9 @@ export default function useViewModel({ hour}: { hour: number}) {
             constMinute: convertYToMinute
         }));
         
-    }
+    }, [dispatch, click, noteList])
 
-    const handleOnMouseMove = (e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number) => {
+    const handleOnMouseMove = useCallback((e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number) => {
         if(click){
             const note = noteList.find((note) => note.id === "preview");
             if(!note) return;
@@ -323,9 +323,9 @@ export default function useViewModel({ hour}: { hour: number}) {
 
         }
 
-    }
+    }, [dispatch, click, noteList])
 
-    const handleOnMouseUp = (e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number) => {
+    const handleOnMouseUp = useCallback((e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number) => {
         if(click){
             return
         }
@@ -354,9 +354,9 @@ export default function useViewModel({ hour}: { hour: number}) {
         dispatch(setEndYear(note.endYear));
 
         (document.getElementById('createAppointmentModal') as any).showModal();
-    }
+    }, [dispatch, click, noteList])
 
-    const handleOnContextMenu = (e: React.MouseEvent<HTMLDivElement>, {draggedItem} : IDraggedItem) => {
+    const handleOnContextMenu = useCallback((e: React.MouseEvent<HTMLDivElement>, {draggedItem} : IDraggedItem) => {
         e.preventDefault();
         const note = draggedItem;
         dispatch(setId(note.id));
@@ -392,7 +392,7 @@ export default function useViewModel({ hour}: { hour: number}) {
         dispatch(setTop(posY));
 
         dispatch(setIsOn(true));
-    }
-
+    }, [dispatch, offsetHeight, offsetWidth])
+    
     return { noteList, tempDraggedItem, currentTime, currentTimeRef, handleDragOver, handleDragLeave, handleDrop, selectedDay, selectedMonth, selectedYear, handleOnClick, handleOnMouseDown, handleOnMouseMove, handleOnMouseUp, handleOnContextMenu }
 }

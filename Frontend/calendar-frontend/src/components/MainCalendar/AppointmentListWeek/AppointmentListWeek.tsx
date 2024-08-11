@@ -67,6 +67,8 @@ export default function AppointmentListWeek({ hour, displayTime = true, showCont
                                 return <div key={`${index}-${note.id}-${thisDay.getTime}`} className="h-6 w-[calc(100%+1rem)] relative bg-transparent self-center rounded-md"></div>
                             }
 
+                            return null;
+
                         })}
                     </div>
                 }
@@ -79,7 +81,7 @@ export default function AppointmentListWeek({ hour, displayTime = true, showCont
                     onDrop={e => handleDrop(e)}
                     onMouseMove={e => handleOnMouseMove(e, hour)}
                     onMouseDown={e => handleOnMouseDown(e, hour, propDate.getDate(), propDate.getMonth(), propDate.getFullYear())}
-                    onMouseUp={e => handleOnMouseUp(e, hour)}
+                    onMouseUp={e => handleOnMouseUp(hour)}
                     >
 
 
