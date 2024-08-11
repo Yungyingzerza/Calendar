@@ -1,5 +1,5 @@
 import { useUpdateAppointmentsById } from "hooks/useUpdateAppointmentsById"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { setIsClick } from "store/isClickOnAppointmentSlice"
 
@@ -23,39 +23,39 @@ export default function useViewModel() {
 
     const dispatch = useDispatch();
 
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setNewTitle(e.target.value)
-    }
+    }, [])
 
-    const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleStartDateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const date = new Date(e.target.value)
         setNewStartDay(date.getDate())
         setNewStartMonth(date.getMonth())
         setNewStartYear(date.getFullYear())
-    }
+    }, [])
 
-    const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleEndDateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const date = new Date(e.target.value)
         setNewEndDay(date.getDate())
         setNewEndMonth(date.getMonth())
         setNewEndYear(date.getFullYear())
-    }
+    }, [])
 
-    const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleStartTimeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const tempHour = e.target.value.split(":")[0]
         const tempMinute = e.target.value.split(":")[1]
         setNewStartHour(parseInt(tempHour))
         setNewStartMinute(parseInt(tempMinute))
-    }
+    }, [])
 
-    const handleEndTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleEndTimeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const tempHour = e.target.value.split(":")[0]
         const tempMinute = e.target.value.split(":")[1]
         setNewEndHour(parseInt(tempHour))
         setNewEndMinute(parseInt(tempMinute))
-    }
+    }, [])
 
-    const handleSave = () => {
+    const handleSave = useCallback(() => {
 
         if(startDateError || startTimeError) {
             return;
@@ -64,12 +64,12 @@ export default function useViewModel() {
         updateAppointments();
         dispatch(setIsClick(false));
         (document.getElementById("appointmentModal") as any).close();
-    }
+    }, [startDateError, startTimeError, updateAppointments, dispatch])
 
-    const handleCloseModal = () => {
+    const handleCloseModal = useCallback(() => {
         dispatch(setIsClick(false));
         (document.getElementById("appointmentModal") as any).close();
-    }
+    }, [dispatch])
 
     useEffect(() => {
         setNewTitle(title)
