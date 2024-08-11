@@ -7,9 +7,9 @@ export default function AppointmentCard({note, newHeight, newTop, opacity = 1} :
         <>
             <div style={{opacity}} 
                 onMouseDown={e => handleMouseDown()} 
-                onClick={e => handleOnClick(e)}  
+                onClick={e => handleOnClick()}  
                 draggable={true} 
-                onDragStart={e => handleDragStart(e)} 
+                onDragStart={e => handleDragStart()} 
                 ref={itemRef} 
                 onContextMenu={e => handleOnContextMenu(e)}
                 className={`bg-info text-info-content w-full rounded-md absolute flex flex-col flex-wrap gap-1 overflow-hidden hover:cursor-grab z-50`}>

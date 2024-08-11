@@ -1,6 +1,5 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteNote } from "store/noteList/action";
 import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop, setStartDay, setEndDay, setStartMonth, setEndMonth, setStartYear, setEndYear } from "store/draggedItemSlice";
 import { setIsClick } from "store/isClickOnAppointmentSlice";
 import { INoteData } from "interfaces/INoteData";
@@ -11,22 +10,19 @@ export default function useViewModel({note, newHeight, newTop, opacity = 1} : {n
     const dispatch = useDispatch();
 
     const {offsetHeight, offsetWidth} = useSelector((state: any) => state.menuContext);
-
-    const noteList = useSelector((state: any) => state.noteList);
     
     useEffect(() => {
         if (itemRef.current) {
             itemRef.current.style.top = `${newTop}px`;
             itemRef.current.style.height = `${newHeight}px`;
         }
-        // eslint-disable-next-line
-    }, [note])
+    }, [note, newHeight, newTop, itemRef])
 
     // 240 px = 60 min
     // 1px = 0.25 min
     // 4px = 1 min
 
-    const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDragStart = useCallback(() => {
         dispatch(setIsClick(true));
 
         dispatch(setId(note.id));
@@ -43,9 +39,9 @@ export default function useViewModel({note, newHeight, newTop, opacity = 1} : {n
         dispatch(setEndMonth(note.endMonth));
         dispatch(setStartYear(note.startYear));
         dispatch(setEndYear(note.endYear));
-    }
+    }, [dispatch, note, newHeight, newTop])
 
-    const handleOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleOnClick = useCallback(() => {
         dispatch(setIsClick(true));
 
         dispatch(setId(note.id));
@@ -64,13 +60,13 @@ export default function useViewModel({note, newHeight, newTop, opacity = 1} : {n
         dispatch(setEndYear(note.endYear));
         dispatch(setIsClick(true));
         (document.getElementById('appointmentModal') as any).showModal()
-    }
+    }, [dispatch, note, newHeight, newTop])
 
-    const handleMouseDown = () => {
+    const handleMouseDown = useCallback(() => {
         dispatch(setIsClick(true));
-    }
+    }, [dispatch])
 
-    const handleOnContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleOnContextMenu = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
         dispatch(setId(note.id));
         dispatch(setTitle(note.title));
@@ -105,7 +101,7 @@ export default function useViewModel({note, newHeight, newTop, opacity = 1} : {n
         dispatch(setTop(posY));
 
         dispatch(setIsOn(true));
-    }
+    }, [dispatch, note, newHeight, newTop, offsetHeight, offsetWidth])
 
 
     return { itemRef, handleDragStart, handleOnClick, handleMouseDown, handleOnContextMenu }
