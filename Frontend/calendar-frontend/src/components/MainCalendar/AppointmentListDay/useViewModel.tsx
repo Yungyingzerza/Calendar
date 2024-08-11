@@ -327,6 +327,9 @@ export default function useViewModel({ hour}: { hour: number}) {
 
     const handleOnMouseUp = useCallback((e : React.MouseEvent<HTMLDivElement, MouseEvent>, hour : number) => {
         if(click){
+            const note = noteList.find((note) => note.id === "preview");
+            if(!note) return;
+            dispatch(deleteNote({id: "preview"}));
             return
         }
 

@@ -341,6 +341,9 @@ export default function useViewModel({ hour, propDate }: { hour: number, propDat
 
     const handleOnMouseUp = useCallback((hour : number) => {
         if(click){
+            const note = noteList.find((note) => note.id === "preview");
+            if(!note) return;
+            dispatch(deleteNote({id: "preview"}));
             return
         }
         const note = noteList.find((note) => note.id === "preview");
