@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IMiniCalendar } from 'interfaces/IMiniCalendar';
 import { ICalendarSlice } from 'interfaces/ICalendarSlice';
 import { useSelector, useDispatch } from 'react-redux';
@@ -80,22 +80,22 @@ export default function useViewModel() {
         }))
     }, [today])
 
-    const getDayOfWeek = (date: Date) => {
+    const getDayOfWeek = useCallback((date: Date) => {
         return date.getDay()
-    }
+    }, [])
 
-    const getNameOfMonth = (month: number) => {
+    const getNameOfMonth = useCallback((month: number) => {
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         return monthNames[month]
-    }
+    }, [])
 
-    const Days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    const Days = useMemo(() => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], [])
 
-    const handleDayClick = (day: number) => {
+    const handleDayClick = useCallback((day: number) => {
         dispatch(setSelectedDay(day))
         dispatch(setSelectedMonth(currentDate.getMonth()))
         dispatch(setSelectedYear(currentDate.getFullYear()))
-    }
+    }, [dispatch, currentDate])
 
     useEffect(() => {
 
@@ -130,21 +130,21 @@ export default function useViewModel() {
 // eslint-disable-next-line
     }, [currentDate])
 
-    const handleNextMonth = () => {
+    const handleNextMonth = useCallback(() => {
         const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
         setCurrentDate(nextMonth)
         dispatch(setCurrentDisplayMonth(nextMonth.getMonth()))
         dispatch(setCurrentDisplayYear(nextMonth.getFullYear()))
-    }
+    }, [currentDate, dispatch])
 
-    const handlePrevMonth = () => {
+    const handlePrevMonth = useCallback(() => {
         const prevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
         setCurrentDate(prevMonth)
         dispatch(setCurrentDisplayMonth(prevMonth.getMonth()))
         dispatch(setCurrentDisplayYear(prevMonth.getFullYear()))
-    }
+    }, [currentDate, dispatch])
 
-    const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleYearChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const year = parseInt(e.target.value)
 
         //check if the year is valid
@@ -154,7 +154,7 @@ export default function useViewModel() {
         setCurrentDate(newDate)
         dispatch(setCurrentDisplayMonth(newDate.getMonth()))
         dispatch(setCurrentDisplayYear(newDate.getFullYear()))
-    }
+    }, [currentDate, dispatch])
 
     return{
         Days,
