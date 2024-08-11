@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setId, setStartHour, setEndHour, setStartMinute, setEndMinute, setTitle, setNewHeight, setNewTop, setStartDay, setEndDay, setStartMonth, setEndMonth, setStartYear, setEndYear } from "store/draggedItemSlice";
 import { setIsClick } from "store/isClickOnAppointmentSlice";
