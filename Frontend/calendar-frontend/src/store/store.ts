@@ -7,6 +7,7 @@ import draggedItemSlice from "./draggedItemSlice";
 import noteListReducers from "./noteList/reducers";
 import isClickOnAppointmentSlice from "./isClickOnAppointmentSlice";
 import menuContextSlice from "./menuContextSlice";
+import scrollSlice from "./scrollSlice";
 export default configureStore({
     reducer: {
         calendar: calendarSlice,
@@ -17,5 +18,6 @@ export default configureStore({
         noteList: noteListReducers,
         isClickOnAppointment: isClickOnAppointmentSlice,
         menuContext: menuContextSlice,
+        scroll: scrollSlice,
     },
 });

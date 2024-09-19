@@ -14,7 +14,7 @@ import {
 } from "react-router-dom";
 
 function App() {
-  const { theme } = useViewModel();
+  const { theme, appRef } = useViewModel();
 
   return (
     <>
@@ -37,7 +37,7 @@ function App() {
             <div className="w-full min-[900px]:block hidden">
               <Navbar />
             </div>
-            <div className="max-w-[calc(100vw-75px)] w-[calc(100%-75px)] h-[calc(100vh-75px)] rounded-2xl bg-base-200 bg-opacity-20 backdrop-blur-2xl shadow-xl p-2 my-5 overflow-auto scroll-smooth">
+            <div ref={appRef} className="max-w-[calc(100vw-75px)] w-[calc(100%-75px)] h-[calc(100vh-75px)] rounded-2xl bg-base-200 bg-opacity-20 backdrop-blur-2xl shadow-xl p-2 my-5 overflow-auto scroll-smooth">
               <Routes>
                 <Route path="/" element={<Navigate to="/day" />} />
                 <Route path="/day" element={<MainCalendarDay />} />

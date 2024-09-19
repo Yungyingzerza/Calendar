@@ -14,6 +14,7 @@ import { API } from "constants/API";
 import { getRefreshToken } from "utils/getRefreshToken";
 
 import { useLocation, useNavigate } from "react-router-dom";
+import { fetchNotes } from "store/noteList/action";
 
 export default function useViewModel() {
     const theme = useSelector((state : IThemeSlice) => state.theme.value);
@@ -67,6 +68,7 @@ export default function useViewModel() {
             dispatch(setName(null))
             dispatch(setPicture(null))
             dispatch(setIsLogin(false))
+            dispatch(fetchNotes([]))
         })
     }, [dispatch])
 

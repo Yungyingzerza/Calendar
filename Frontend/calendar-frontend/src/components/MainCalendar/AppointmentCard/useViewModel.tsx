@@ -62,9 +62,10 @@ export default function useViewModel({note, newHeight, newTop, opacity = 1} : {n
         (document.getElementById('appointmentModal') as any).showModal()
     }, [dispatch, note, newHeight, newTop])
 
-    const handleMouseDown = useCallback(() => {
-        dispatch(setIsClick(true));
+    const handleMouseDown = useCallback((e : React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        dispatch(setIsClick(true));      
     }, [dispatch])
+
 
     const handleOnContextMenu = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();

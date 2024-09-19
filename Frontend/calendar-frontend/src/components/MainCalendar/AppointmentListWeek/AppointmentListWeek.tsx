@@ -10,7 +10,7 @@ export default function AppointmentListWeek({ hour, displayTime = true, showCont
         <>
             <div className="flex flex-col w-full gap-2">
 
-                {(dayOfWeek !== -1 && hour === 0 && !displayTime && propDate) &&
+                {/* {(dayOfWeek !== -1 && hour === 0 && !displayTime && propDate) &&
                     <div className="text-center text-xs md:text-sm flex flex-col">
                         <span className="font-thin">{getDayName(dayOfWeek)}</span>
                         <span className="relative">{propDate.getDate()}</span>
@@ -23,7 +23,7 @@ export default function AppointmentListWeek({ hour, displayTime = true, showCont
                         <span className="font-thin">Day</span>
                         <span className="relative">Date</span>
                     </div>
-                }
+                } */}
 
                 {/* Apoointment that longer than 1 day */}
                 {(hour === 0) &&
