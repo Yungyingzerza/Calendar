@@ -4,14 +4,21 @@ import { useCallback } from "react";
 import { INoteData } from "interfaces/INoteData";
 import { useDispatch } from "react-redux";
 import { setScrollY } from "store/scrollSlice";
+import { useLocation } from "react-router-dom";
 
 export default function Appointments() {
 
     const noteList = useSelector((state: INoteListSlice) => state.noteList);
 
+    const location = useLocation();
+
     const dispatch = useDispatch();
 
     const handleClick = useCallback((appoinment : INoteData) => {
+
+        if(location.pathname === '/year') {
+            return;
+        }
 
         //if duration is more than 1 day
         if(appoinment.startDay !== appoinment.endDay) {
@@ -31,7 +38,7 @@ export default function Appointments() {
         dispatch(setScrollY(scrollY));
 
 
-    }, [noteList, dispatch]);
+    }, [noteList, dispatch, location]);
 
 
     return (

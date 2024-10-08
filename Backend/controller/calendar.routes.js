@@ -22,6 +22,11 @@ calendarRouter.get('/appointment/week', async (req, res) => {
     return await calendarService.getAppointmentsByWeek(req, res);
 });
 
+calendarRouter.get('/appointment/year/:year', async (req, res) => {
+    return await calendarService.getAppointmentsByYear(req, res);
+});
+
+
 
 
 module.exports = calendarRouter;

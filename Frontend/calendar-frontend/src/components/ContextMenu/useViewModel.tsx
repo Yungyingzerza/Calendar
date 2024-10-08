@@ -4,7 +4,7 @@ import { setIsOn, setOffsetHeight, setOffsetWidth } from "store/menuContextSlice
 import { setIsClick } from "store/isClickOnAppointmentSlice";
 
 export default function useViewModel() {
-    const menuRef = useRef<HTMLDivElement>(null);
+    const menuRef = useRef<HTMLDivElement >(null);
     const dispatch = useDispatch();
 
     const {isOn, top, left} = useSelector((state: any) => state.menuContext);

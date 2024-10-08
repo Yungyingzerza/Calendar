@@ -14,14 +14,8 @@ export default function AppointmentCard({note, newHeight, newTop, opacity = 1} :
                 onContextMenu={e => handleOnContextMenu(e)}
                 className={`bg-info text-info-content w-full rounded-md absolute flex flex-col flex-wrap gap-1 overflow-hidden hover:cursor-grab z-50`}>
 
-                    <div id="adjustTime-Top" 
-                        className=" w-full h-4 cursor-n-resize">
-                    </div>
                     <span className="text-sm lg:text-lg"> {note.title} </span>
                     <span className="text-xs lg:text-lg flex-1"> {note.startHour.toString().padStart(2, '0')}:{note.startMinute.toString().padStart(2, '0')} - {note.endHour.toString().padStart(2, '0')}:{note.endMinute.toString().padStart(2, '0')} </span>
-                    <div id="adjustTime-Bottom" 
-                        className=" w-full h-4 cursor-s-resize">
-                    </div>
             </div>
         </>
     )

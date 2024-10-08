@@ -3,6 +3,7 @@ import Sidebar from "components/Sidebar/Sidebar";
 import Navbar from "components/Navbar/Navbar";
 import MainCalendarDay from "components/MainCalendar/MainCalendarDay";
 import MainCalendarWeek from "components/MainCalendar/MainCalendarWeek";
+import MainCalendarYear from "components/MainCalendar/MainCalendarYear";
 import AppointmentModal from "components/AppointmentModal/AppointmentModal";
 import CreateAppointmentModal from "components/CreateAppointmentModal/CreateAppointmentModal";
 import ContextMenu from "components/ContextMenu/ContextMenu";
@@ -12,6 +13,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import ListAppointmentModal from "components/ListAppointmentsModal/ListAppointmentModal";
 
 function App() {
   const { theme, appRef } = useViewModel();
@@ -22,6 +24,7 @@ function App() {
         <div className={`absolute inset-0 bg-pink-400 bg-[size:20px_20px] ${theme === 'dark' ? 'opacity-15' : 'opacity-50'} blur-[350px] z-10`}> </div>
         <AppointmentModal />
         <CreateAppointmentModal />
+        <ListAppointmentModal />
         <ContextMenu />
         <DeleteAppointmentModal />
         <div className="flex flex-col min-[900px]:flex-row flex-wrap relative z-20">
@@ -42,7 +45,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/day" />} />
                 <Route path="/day" element={<MainCalendarDay />} />
                 <Route path="/week" element={<MainCalendarWeek/>} />
-                <Route path="/month" element={<div>Month</div>} />
+                <Route path="/year" element={<MainCalendarYear/>} />
                 <Route path="*" element={<Navigate to="/day" />} />
               </Routes>
             </div>

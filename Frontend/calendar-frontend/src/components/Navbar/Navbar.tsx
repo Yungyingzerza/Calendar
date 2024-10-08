@@ -91,7 +91,7 @@ export default function Navbar() {
 
                 {/* left zone */}
                 <div className="flex-1 ml-5">
-                    <button onClick={() => handleTodayClick()} className="btn btn-ghost border border-gray-600">Today</button>
+                   {page !== '/year' && <button onClick={() => handleTodayClick()} className="btn btn-ghost border border-gray-600">Today</button>}
                 </div>
             </div>
         </>

@@ -55,7 +55,8 @@ async function getAppointmentsByDate(req, res) {
                         }
                         
                     },
-                    attributes: ['id','title', 'start', 'end']
+                    attributes: ['id','title', 'start', 'end'],
+                    order: [['start', 'ASC']]
                 });
 
 
@@ -119,8 +120,69 @@ async function getAppointmentsByWeek(req, res) {
                             ]
                         }
                     },
-                    attributes: ['id','title', 'start', 'end']
+                    attributes: ['id','title', 'start', 'end'],
+                    order: [['start', 'ASC']]
                 });
+                const user = new UserRefreshClient(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, decoded.refresh_token);
+                const tokens = await user.refreshAccessToken();
+                jsonwebtoken.sign({access_token: tokens.credentials.access_token, refresh_token: tokens.credentials.refresh_token}, process.env.JWT_SECRET, {expiresIn: '365d'}, (err, token) => {
+                    return res.cookie('jwt', token, {httpOnly: true, secure: !process.env.DEV, sameSite: 'lax', maxAge: 365*24*60*60*1000}).status(200).json({appointments});
+                });
+            }else{
+                return res.status(401).json({message: "Invalid token"});
+            }
+
+            
+        });
+
+    }catch(err){
+        res.status(401).json({message: "Invalid token"});
+    }
+}
+
+async function getAppointmentsByYear(req, res) {
+    try{
+        if(!req.cookies.jwt) return res.status(401).json({message: "Invalid cookie"});
+
+        if(!req.params.year) return res.status(400).json({message: "Invalid year"});
+
+        jsonwebtoken.verify(req.cookies.jwt, process.env.JWT_SECRET, async (err, decoded) => {   
+            if(err) return res.status(401).json({message: "Invalid token"});
+
+            if(decoded){
+                const email = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo`,{
+                    headers: {
+                        Authorization: `Bearer ${decoded.access_token}`
+                    }
+                }).then(res => {
+                    return res.data.email;
+                }).catch(err => {
+                    return "error";
+                });
+
+                if(email === "error") return res.status(401).json({message: "Invalid token"});
+
+                //find appointments start from 1st January to 31st December or end in 31st December and order by start date
+                const appointments = await Calendar.findAll({
+                    where:{
+                        email: email,
+                        [Op.or]: [
+                            {
+                                start:{
+                                    [Op.between]: [new Date(req.params.year, 0, 1), new Date(req.params.year, 11, 31, 23, 59, 59)]
+                                }
+                            },
+                            {
+                                end:{
+                                    [Op.between]: [new Date(req.params.year, 0, 1), new Date(req.params.year, 11, 31, 23, 59, 59)]
+                                }
+                            }
+                        ]
+                    },
+                    attributes: ['id','title', 'start', 'end'],
+                    order: [['start', 'ASC']]
+                });
+
                 const user = new UserRefreshClient(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, decoded.refresh_token);
                 const tokens = await user.refreshAccessToken();
                 jsonwebtoken.sign({access_token: tokens.credentials.access_token, refresh_token: tokens.credentials.refresh_token}, process.env.JWT_SECRET, {expiresIn: '365d'}, (err, token) => {
@@ -299,6 +361,7 @@ async function deleteAppointmentById(req, res) {
 module.exports = {
     getAppointmentsByDate,
     getAppointmentsByWeek,
+    getAppointmentsByYear,
     updateAppointmentsById,
     createAppointment,
     deleteAppointmentById

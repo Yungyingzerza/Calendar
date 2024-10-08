@@ -5,10 +5,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedDay, setSelectedMonth, setSelectedYear, setCurrentDisplayMonth, setCurrentDisplayYear } from 'store/calendarSlice';
 import { useGetAppointmentsDate } from 'hooks/useGetAppointmentsDate';
 import { useGetAppointmentsWeek } from 'hooks/useGetAppointmentsWeek';
+import { INoteListSlice } from 'interfaces/INoteList';
 
-export default function useViewModel() {
+export default function useViewModel(props: { isYear?: boolean, monthIndex?: number }) {
     const dispatch = useDispatch();
     const { selectedDay, selectedMonth, selectedYear, currentDisplayMonth, currentDisplayYear } = useSelector((state: ICalendarSlice) => state.calendar)
+    const appointments = useSelector((state: INoteListSlice) => state.noteList);
     const [today, setToday] = useState<Date>(new Date())
     const [currentDate, setCurrentDate] = useState<Date>(new Date())
     const setFirstDayOfMonth = useState<Date>(new Date())[1]
@@ -97,38 +99,74 @@ export default function useViewModel() {
         dispatch(setSelectedYear(currentDate.getFullYear()))
     }, [dispatch, currentDate])
 
+    const handleDayClickForYear = useCallback((day: number, month : number, year: number) => {
+        dispatch(setSelectedDay(day))
+        dispatch(setSelectedMonth(month))
+        dispatch(setSelectedYear(year));
+
+        (document.getElementById('listAppointmentModal') as any).showModal();
+    }, [dispatch])
+
     useEffect(() => {
 
-        const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
-        setFirstDayOfMonth(firstDay)
-        setLastDayOfMonth(lastDay)
-
-        let shift = getDayOfWeek(firstDay)
-
-        for (let i = 0; i < shift; i++) {
-            setFullCalendar(prev => [...prev, { day: 0, month: 0, year: 0, isToday: false }])
+        if(props.isYear && props.monthIndex !== undefined){
+            const firstDay = new Date(selectedYear, props.monthIndex, 1)
+            const lastDay = new Date(selectedYear, props.monthIndex + 1, 0)
+            setFirstDayOfMonth(firstDay)
+            setLastDayOfMonth(lastDay)
+    
+            let shift = getDayOfWeek(firstDay)
+    
+            for (let i = 0; i < shift; i++) {
+                setFullCalendar(prev => [...prev, { day: 0, month: 0, year: 0, isToday: false }])
+            }
+    
+            //increment the firstDay by 1 until the last day of the month
+            while (firstDay <= lastDay) {
+                const day = firstDay.getDate()
+                const month = firstDay.getMonth()
+                const year = firstDay.getFullYear()
+    
+                //check if the day is today
+                const isToday = firstDay.toDateString() === today.toDateString()
+    
+                setFullCalendar(prev => [...prev, { day, month, year, isToday }])
+                firstDay.setDate(firstDay.getDate() + 1)
+            }
+        }else{
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+            setFirstDayOfMonth(firstDay)
+            setLastDayOfMonth(lastDay)
+    
+            let shift = getDayOfWeek(firstDay)
+    
+            for (let i = 0; i < shift; i++) {
+                setFullCalendar(prev => [...prev, { day: 0, month: 0, year: 0, isToday: false }])
+            }
+    
+            //increment the firstDay by 1 until the last day of the month
+            while (firstDay <= lastDay) {
+                const day = firstDay.getDate()
+                const month = firstDay.getMonth()
+                const year = firstDay.getFullYear()
+    
+                //check if the day is today
+                const isToday = firstDay.toDateString() === today.toDateString()
+    
+                setFullCalendar(prev => [...prev, { day, month, year, isToday }])
+                firstDay.setDate(firstDay.getDate() + 1)
+            }
         }
 
-        //increment the firstDay by 1 until the last day of the month
-        while (firstDay <= lastDay) {
-            const day = firstDay.getDate()
-            const month = firstDay.getMonth()
-            const year = firstDay.getFullYear()
 
-            //check if the day is today
-            const isToday = firstDay.toDateString() === today.toDateString()
-
-            setFullCalendar(prev => [...prev, { day, month, year, isToday }])
-            firstDay.setDate(firstDay.getDate() + 1)
-        }
 
         //clean up
         return () => {
             setFullCalendar([])
         }
 // eslint-disable-next-line
-    }, [currentDate])
+    }, [currentDate, today, props.isYear, props.monthIndex, selectedYear, selectedMonth])
 
     const handleNextMonth = useCallback(() => {
         const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
@@ -156,6 +194,26 @@ export default function useViewModel() {
         dispatch(setCurrentDisplayYear(newDate.getFullYear()))
     }, [currentDate, dispatch])
 
+    const hasAppointmentOnDay = useCallback((day: string) => {
+        // Convert the day to a Date object (assuming `day` is in the format "YYYY-MM-DD")
+        const currentDay = new Date(day);
+    
+        // Loop through all appointments
+        for (const appointment of appointments) {
+            // Convert the start and end times of the appointment to Date objects
+            
+            const startDate = new Date(appointment.startYear, appointment.startMonth, appointment.startDay);
+            const endDate = new Date(appointment.endYear, appointment.endMonth, appointment.endDay);
+    
+            // Check if the current day is between the start and end dates (inclusive)
+            if (currentDay >= startDate && currentDay <= endDate) {
+                return true; // Appointment found on this day
+            }
+        }
+        return false; // No appointment on this day
+    }, [appointments]);
+    
+
     return{
         Days,
         getNameOfMonth,
@@ -168,6 +226,8 @@ export default function useViewModel() {
         selectedMonth,
         selectedYear,
         currentDisplayMonth,
-        currentDisplayYear
+        currentDisplayYear,
+        hasAppointmentOnDay,
+        handleDayClickForYear
     }
 }
