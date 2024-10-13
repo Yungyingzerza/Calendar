@@ -209,6 +209,17 @@ export default function useViewModel(props: { isYear?: boolean, monthIndex?: num
             if (currentDay >= startDate && currentDay <= endDate) {
                 return true; // Appointment found on this day
             }
+
+            // Check if the current day is the same as the start date
+            if (currentDay.toDateString() === startDate.toDateString()) {
+                return true; // Appointment found on this day
+            }
+
+            // Check if the current day is the same as the end date
+            if (currentDay.toDateString() === endDate.toDateString()) {
+                return true; // Appointment found on this day
+            }
+
         }
         return false; // No appointment on this day
     }, [appointments]);

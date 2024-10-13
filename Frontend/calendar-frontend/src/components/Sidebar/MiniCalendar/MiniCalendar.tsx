@@ -65,7 +65,7 @@ export default function MiniCalendar(props: { isYear?: boolean, monthIndex?: num
                                 {/* if today render with diff style */}
                                 {dateDetail.isToday ? <div className=" gap-2"> {dateDetail.day}</div>
                                     :
-                                    // check if the day is the selected day
+                                    // check if this day has appointment
                                     hasAppointmentOnDay(`${dateDetail.year}-${(dateDetail.month)+1}-${dateDetail.day}`) ?
                                         <div className="text-info gap-2"> {dateDetail.day} </div>
                                         :
