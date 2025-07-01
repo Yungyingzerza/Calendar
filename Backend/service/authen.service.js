@@ -15,7 +15,7 @@ async function verify(req, res) {
             return res.cookie('jwt', token, {httpOnly: true, secure: !process.env.DEV, sameSite: 'lax', maxAge: 365*24*60*60*1000}).status(200).json({message: "Success"});
         })
     }catch(err){
-        res.status(400).json({mesaage:"Invalid token"});
+        res.status(400).json({mesaage:"Invalid token", err});
     }
 
 }
